@@ -10,7 +10,7 @@ from __future__ import annotations
 import mimetypes
 
 from django.contrib import messages
-from django.db import IntegrityError, models, transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Count, DecimalField, F, Q, Sum
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -31,6 +31,7 @@ from .forms import (
 )
 from .models import Chalani, ChalaniItem, Item, Vendor
 from .services import next_line_no
+from django.utils.translation import gettext as _
 
 AMOUNT = DecimalField(max_digits=16, decimal_places=2)
 
@@ -70,7 +71,10 @@ def _filtered_register(request):
             try:
                 qs = qs.filter(**{lookup: npdates.bs_to_ad(raw)})
             except npdates.InvalidBikramSambatDate:
-                messages.warning(request, f"मिति '{raw}' बुझिएन — फिल्टर छोडियो.")
+                messages.warning(
+                    request,
+                    _("Could not read the date '%(value)s' — filter skipped.") % {"value": raw},
+                )
     return qs, {
         "q": query,
         "status": status,
@@ -116,7 +120,7 @@ def upload(request):
             chalani.save()
             if form.cleaned_data["use_ai"]:
                 enqueue_extraction(chalani)
-                messages.info(request, "फोटो पढ्दै छ — केही क्षणमा मस्यौदा तयार हुन्छ.")
+                messages.info(request, _("Reading the photo — the draft will be ready in a moment."))
             return redirect(chalani)
     else:
         form = ChalaniUploadForm()
@@ -134,7 +138,7 @@ def detail(request, pk):
     chalani = _get_chalani(request, pk)
     if request.method == "POST":
         if chalani.status == Chalani.Status.BILLED:
-            messages.error(request, "बिल भइसकेको चलानी सम्पादन गर्न मिल्दैन.")
+            messages.error(request, _("A billed chalani cannot be edited."))
             return redirect(chalani)
         form = ChalaniForm(
             request.POST, instance=chalani, organization=request.organization
@@ -154,9 +158,9 @@ def detail(request, pk):
                         line.line_no = position
                         position += 1
                     line.save()
-            messages.success(request, "सुरक्षित भयो.")
+            messages.success(request, _("Saved."))
             return redirect(chalani)
-        messages.error(request, "केही फिल्डमा त्रुटि छ — तल हेर्नुहोस्.")
+        messages.error(request, _("Some fields need fixing — see below."))
     else:
         form = ChalaniForm(instance=chalani, organization=request.organization)
         formset = ChalaniItemFormSet(instance=chalani, organization=request.organization)
@@ -212,7 +216,9 @@ def verify(request, pk):
     chalani = _get_chalani(request, pk)
     gaps = chalani.missing_for_verification()
     if gaps:
-        messages.error(request, "प्रमाणित गर्न मिलेन: " + ", ".join(gaps))
+        messages.error(
+            request, _("Cannot verify yet: %(gaps)s") % {"gaps": ", ".join(str(g) for g in gaps)}
+        )
         return redirect(chalani)
     chalani.status = Chalani.Status.VERIFIED
     chalani.verified_by = request.user
@@ -224,10 +230,11 @@ def verify(request, pk):
         chalani.status = Chalani.Status.DRAFT
         messages.error(
             request,
-            f"चलानी नं. {chalani.chalani_no} यही आपूर्तिकर्ताको लागि पहिले नै प्रमाणित छ.",
+            _("Chalani no. %(no)s is already verified for this supplier.")
+            % {"no": chalani.chalani_no},
         )
         return redirect(chalani)
-    messages.success(request, "चलानी प्रमाणित भयो ✓")
+    messages.success(request, _("Chalani verified ✓"))
     return redirect(chalani)
 
 
@@ -236,11 +243,11 @@ def verify(request, pk):
 def mark_billed(request, pk):
     chalani = _get_chalani(request, pk)
     if chalani.status != Chalani.Status.VERIFIED:
-        messages.error(request, "पहिले प्रमाणित गर्नुहोस्.")
+        messages.error(request, _("Verify it first."))
     else:
         chalani.status = Chalani.Status.BILLED
         chalani.save()
-        messages.success(request, "बिल भएको जनाइयो.")
+        messages.success(request, _("Marked as billed."))
     return redirect(chalani)
 
 
@@ -252,7 +259,7 @@ def reopen(request, pk):
     chalani.verified_by = None
     chalani.verified_at = None
     chalani.save()
-    messages.info(request, "मस्यौदामा फर्काइयो.")
+    messages.info(request, _("Sent back to draft."))
     return redirect(chalani)
 
 
@@ -261,12 +268,12 @@ def reopen(request, pk):
 def reextract(request, pk):
     chalani = _get_chalani(request, pk)
     if not chalani.photo:
-        messages.error(request, "फोटो छैन.")
+        messages.error(request, _("There is no photo."))
     elif chalani.items.exists():
-        messages.error(request, "पहिले सबै लाइन हटाउनुहोस् — AI ले भरिएको मेट्दैन.")
+        messages.error(request, _("Remove the existing lines first — AI never overwrites what is filled in."))
     else:
         enqueue_extraction(chalani)
-        messages.info(request, "फेरि पढ्दै छ…")
+        messages.info(request, _("Reading it again…"))
     return redirect(chalani)
 
 
@@ -275,10 +282,10 @@ def reextract(request, pk):
 def delete(request, pk):
     chalani = _get_chalani(request, pk)
     if chalani.status in {Chalani.Status.VERIFIED, Chalani.Status.BILLED}:
-        messages.error(request, "प्रमाणित चलानी मेट्न मिल्दैन.")
+        messages.error(request, _("A verified chalani cannot be deleted."))
         return redirect(chalani)
     chalani.delete()
-    messages.success(request, "मस्यौदा मेटियो.")
+    messages.success(request, _("Draft deleted."))
     return redirect("chalani:register")
 
 
@@ -288,7 +295,7 @@ def photo(request, pk):
     """The only way a photo is ever served — MEDIA_ROOT is not public."""
     chalani = _get_chalani(request, pk)
     if not chalani.photo:
-        raise Http404("फोटो छैन")
+        raise Http404(_("There is no photo"))
     content_type = mimetypes.guess_type(chalani.photo.name)[0] or "application/octet-stream"
     response = FileResponse(chalani.photo.open("rb"), content_type=content_type)
     response["Cache-Control"] = "private, max-age=3600"
@@ -320,7 +327,7 @@ def vendor_form(request, pk=None):
         form = VendorForm(request.POST, instance=vendor, organization=request.organization)
         if form.is_valid():
             vendor = form.save()
-            messages.success(request, f"{vendor} सुरक्षित भयो.")
+            messages.success(request, _("%(vendor)s saved.") % {"vendor": vendor})
             if request.GET.get("next") == "chalani":
                 return redirect(reverse("chalani:register"))
             return redirect("chalani:vendor_list")
@@ -350,7 +357,7 @@ def item_form(request, pk=None):
         form = ItemForm(request.POST, instance=item, organization=request.organization)
         if form.is_valid():
             form.save()
-            messages.success(request, "सामान सुरक्षित भयो.")
+            messages.success(request, _("Item saved."))
             return redirect("chalani:item_list")
     else:
         form = ItemForm(instance=item, organization=request.organization)
@@ -406,8 +413,10 @@ def export_csv(request):
     response["Content-Disposition"] = 'attachment; filename="chalani-register.csv"'
     writer = csv.writer(response)
     writer.writerow(
-        ["मिति (बि.सं.)", "Date (AD)", "आ.व.", "चलानी नं.", "आपूर्तिकर्ता", "गाडी नं.",
-         "लाइन", "जम्मा रकम", "स्थिति"]
+        [
+            _("Date (BS)"), _("Date (AD)"), _("Fiscal year"), _("Chalani no."),
+            _("Supplier"), _("Vehicle no."), _("Lines"), _("Total amount"), _("Status"),
+        ]
     )
     for chalani in chalanis.iterator():
         writer.writerow(

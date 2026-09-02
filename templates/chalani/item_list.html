@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% load nepal %}
-{% block title %}सामान क्याटलग{% endblock %}
+{% load nepal i18n %}
+{% block title %}{% translate 'Item catalog' %}{% endblock %}
 {% block content %}
 <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
   <div>
-    <h1 class="text-2xl font-bold">सामान क्याटलग</h1>
-    <p class="text-sm opacity-60">प्रमाणित गर्दा कागजको लेखाइलाई यहीँका सामानसँग जोडिन्छ.</p>
+    <h1 class="text-2xl font-bold">{% translate 'Item catalog' %}</h1>
+    <p class="text-sm opacity-60">{% translate 'Verification links what the paper says to the items listed here.' %}</p>
   </div>
-  <a href="{% url 'chalani:item_create' %}" class="btn btn-primary btn-sm">+ नयाँ सामान</a>
+  <a href="{% url 'chalani:item_create' %}" class="btn btn-primary btn-sm">{% translate '+ New item' %}</a>
 </div>
 
-<input type="search" name="q" value="{{ q }}" placeholder="सामान खोज्नुहोस्…"
+<input type="search" name="q" value="{{ q }}" placeholder="{% translate 'Search items…' %}"
        class="input input-bordered w-full max-w-sm mb-4"
        hx-get="{% url 'chalani:item_list' %}" hx-target="#item-catalog" hx-swap="outerHTML"
        hx-trigger="input changed delay:300ms" hx-push-url="true">
@@ -19,7 +19,7 @@
 <div id="item-catalog" class="card bg-base-100 border border-base-300 overflow-hidden">
   <div class="overflow-x-auto">
     <table class="table table-zebra">
-      <thead><tr><th>नाम</th><th>इकाई</th><th class="text-right">सामान्य दर</th><th class="text-right">लाइन</th><th></th></tr></thead>
+      <thead><tr><th>{% translate 'Name' %}</th><th>{% translate 'Unit' %}</th><th class="text-right">{% translate 'Default rate' %}</th><th class="text-right">{% translate 'Lines' %}</th><th></th></tr></thead>
       <tbody>
       {% for item in items %}
         <tr class="hover">
@@ -27,13 +27,13 @@
             <div class="font-medium">{{ item.name_np|default:item.name }}</div>
             {% if item.name_np %}<div class="text-xs opacity-50">{{ item.name }}</div>{% endif %}
           </td>
-          <td>{{ item.unit|unit_np }}</td>
-          <td class="text-right tabular">{% if item.default_rate %}रू. {{ item.default_rate|nprs }}{% else %}—{% endif %}</td>
-          <td class="text-right tabular">{{ item.line_count|nepnum }}</td>
-          <td class="text-right"><a class="btn btn-ghost btn-xs" href="{% url 'chalani:item_edit' item.pk %}">सम्पादन</a></td>
+          <td>{{ item.unit|unit_label }}</td>
+          <td class="text-right tabular">{% if item.default_rate %}{% translate 'Rs.' %} {{ item.default_rate|money }}{% else %}—{% endif %}</td>
+          <td class="text-right tabular">{{ item.line_count|num }}</td>
+          <td class="text-right"><a class="btn btn-ghost btn-xs" href="{% url 'chalani:item_edit' item.pk %}">{% translate 'Edit' %}</a></td>
         </tr>
       {% empty %}
-        <tr><td colspan="5" class="text-center py-12 opacity-60">क्याटलग खाली छ.</td></tr>
+        <tr><td colspan="5" class="text-center py-12 opacity-60">{% translate 'The catalog is empty.' %}</td></tr>
       {% endfor %}
       </tbody>
     </table>

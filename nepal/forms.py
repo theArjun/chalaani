@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 
 from .dates import InvalidBikramSambatDate, ascii_digits, bs_to_ad, parse_bs
+from django.utils.translation import gettext_lazy as _
 
 
 class BikramSambatDateInput(forms.TextInput):
@@ -40,8 +41,8 @@ class BikramSambatDateField(forms.CharField):
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("max_length", 12)
-        kwargs.setdefault("label", "मिति (बि.सं.)")
-        kwargs.setdefault("help_text", "ढाँचा: YYYY-MM-DD")
+        kwargs.setdefault("label", _("Date (BS)"))
+        kwargs.setdefault("help_text", _("Format: YYYY-MM-DD"))
         super().__init__(*args, **kwargs)
 
     def clean(self, value):

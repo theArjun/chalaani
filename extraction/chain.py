@@ -11,6 +11,7 @@ from nepal import dates as npdates
 
 from .prompts import SYSTEM_PROMPT, USER_INSTRUCTION
 from .schema import ChalaniExtraction
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +23,10 @@ class ExtractionUnavailable(RuntimeError):
 def build_chain():
     """`ChatAnthropic(...).with_structured_output(ChalaniExtraction)` — that's the pipeline."""
     if not settings.EXTRACTION_ENABLED:
-        raise ExtractionUnavailable("CHALAANI_EXTRACTION_ENABLED=0 — AI पढाइ बन्द छ.")
+        raise ExtractionUnavailable(_("CHALAANI_EXTRACTION_ENABLED=0 — AI reading is switched off."))
     if not settings.ANTHROPIC_API_KEY:
         raise ExtractionUnavailable(
-            "ANTHROPIC_API_KEY सेट भएको छैन — .env मा राख्नुहोस् (AI reading is disabled without it)."
+            _("ANTHROPIC_API_KEY is not set — put it in .env; AI reading is disabled without it.")
         )
 
     from langchain_anthropic import ChatAnthropic

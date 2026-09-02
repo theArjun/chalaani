@@ -7,6 +7,7 @@ import re
 from django.core.exceptions import ValidationError
 
 from .dates import ascii_digits
+from django.utils.translation import gettext_lazy as _
 
 _PAN_RE = re.compile(r"^\d{9}$")
 # NTC/Ncell/Smart mobiles are 98x/97x/96x/988...; landlines are 0<area><number>.
@@ -21,7 +22,7 @@ def validate_pan(value):
     digits = ascii_digits(value).replace(" ", "").replace("-", "")
     if not _PAN_RE.match(digits):
         raise ValidationError(
-            "PAN/VAT नम्बर ९ अंकको हुनुपर्छ (PAN must be exactly 9 digits).",
+            _("PAN/VAT number must be exactly 9 digits."),
             code="invalid_pan",
         )
 
@@ -33,7 +34,7 @@ def validate_nepali_phone(value):
     if _MOBILE_RE.match(digits) or _LANDLINE_RE.match(digits):
         return
     raise ValidationError(
-        "फोन नम्बर मिलेन — मोबाइल (98########) वा ल्यान्डलाइन (01-#######) राख्नुहोस्.",
+        _("That phone number does not look right — use a mobile (98########) or a landline (01-#######)."),
         code="invalid_phone",
     )
 
@@ -59,6 +60,6 @@ def validate_vehicle_no(value):
         return
     if not _VEHICLE_RE.match(value.strip()):
         raise ValidationError(
-            "गाडी नम्बर मिलेन (unexpected characters in the vehicle number).",
+            _("Unexpected characters in the vehicle number."),
             code="invalid_vehicle",
         )

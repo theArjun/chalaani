@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         chalani_id = options["chalani_id"]
         if not Chalani.objects.filter(pk=chalani_id).exists():
-            raise CommandError(f"चलानी #{chalani_id} भेटिएन")
+            raise CommandError(f"chalani #{chalani_id} not found")
         result = run_extraction(chalani_id)
         chalani = Chalani.objects.get(pk=chalani_id)
         self.stdout.write(f"result: {result}")

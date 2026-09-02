@@ -13,6 +13,7 @@ import datetime as _dt
 import re
 
 import nepali_datetime as ndt
+from django.utils.translation import gettext_lazy as _
 
 # Baishakh .. Chaitra
 MONTHS_NP = [
@@ -54,21 +55,23 @@ def devanagari_digits(value) -> str:
 def parse_bs(value: str) -> ndt.date:
     """Parse `2082-05-17`, `2082/5/17` or `२०८२।०५।१७` into a BS date."""
     if value is None:
-        raise InvalidBikramSambatDate("मिति खाली छ / date is empty")
+        raise InvalidBikramSambatDate(_("The date is empty"))
     if isinstance(value, ndt.date):
         return value
     text = ascii_digits(str(value)).replace("।", "-")
     match = _BS_RE.match(text)
     if not match:
         raise InvalidBikramSambatDate(
-            f"'{value}' मिति बुझिएन — ढाँचा YYYY-MM-DD (जस्तै 2082-05-17)"
+            _("Could not read the date '%(value)s' — use YYYY-MM-DD (e.g. 2082-05-17)")
+            % {"value": value}
         )
     year, month, day = (int(part) for part in match.groups())
     try:
         return ndt.date(year, month, day)
     except Exception as exc:  # nepali_datetime raises bare ValueError/KeyError
         raise InvalidBikramSambatDate(
-            f"बि.सं. {year}-{month:02d}-{day:02d} अवस्थित छैन ({exc})"
+            _("BS %(date)s does not exist (%(error)s)")
+            % {"date": f"{year}-{month:02d}-{day:02d}", "error": exc}
         ) from exc
 
 

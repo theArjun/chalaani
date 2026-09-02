@@ -5,6 +5,7 @@ from __future__ import annotations
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils.translation import get_language
 from django.views.decorators.http import require_GET
 
 from . import dates
@@ -27,13 +28,17 @@ def date_preview(request):
     except dates.InvalidBikramSambatDate as exc:
         return render(request, "nepal/date_preview.html", {"error": str(exc)})
     ad = bs.to_datetime_date()
+    nepali = (get_language() or "").startswith("ne")
     return render(
         request,
         "nepal/date_preview.html",
         {
             "ad": ad,
-            "bs_np": dates.bs_display(bs),
-            "weekday": dates.format_bs(bs, "{weekday_np}"),
+            # Bikram Sambat either way — only the script follows the language.
+            "bs_text": (
+                dates.bs_display(bs) if nepali else dates.format_bs(bs, "{d} {month_en} {y}")
+            ),
+            "weekday": dates.format_bs(bs, "{weekday_np}" if nepali else "{weekday_en}"),
             "fy": dates.fiscal_year(bs),
         },
     )

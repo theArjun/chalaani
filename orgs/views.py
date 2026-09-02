@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import AddMemberForm, OrganizationForm
-from .models import Membership, Organization
+from .models import Membership
+from django.utils.translation import gettext as _
 
 
 @login_required
@@ -19,7 +20,7 @@ def create(request):
             )
             request.user.active_organization = organization
             request.user.save(update_fields=["active_organization"])
-            messages.success(request, f"{organization} दर्ता भयो.")
+            messages.success(request, _("%(org)s registered.") % {"org": organization})
             return redirect("chalani:dashboard")
     else:
         form = OrganizationForm()
@@ -32,7 +33,9 @@ def switch(request, pk):
     membership = get_object_or_404(Membership, organization_id=pk, user=request.user)
     request.user.active_organization = membership.organization
     request.user.save(update_fields=["active_organization"])
-    messages.info(request, f"{membership.organization} मा स्विच भयो.")
+    messages.info(
+        request, _("Switched to %(org)s.") % {"org": membership.organization}
+    )
     return redirect("chalani:dashboard")
 
 
@@ -56,17 +59,22 @@ def settings_view(request):
                 )
                 messages.success(
                     request,
-                    f"{user} {'थपियो' if created else 'पहिले नै सदस्य हुनुहुन्छ'}.",
+                    (
+                        _("%(user)s added.")
+                        if created
+                        else _("%(user)s is already a member.")
+                    )
+                    % {"user": user},
                 )
                 return redirect("orgs:settings")
         else:
             form = OrganizationForm(request.POST, instance=request.organization)
             if form.is_valid():
                 form.save()
-                messages.success(request, "फर्मको विवरण सुरक्षित भयो.")
+                messages.success(request, _("Firm details saved."))
                 return redirect("orgs:settings")
     elif request.method == "POST":
-        messages.error(request, "यो परिवर्तन मालिकले मात्र गर्न सक्नुहुन्छ.")
+        messages.error(request, _("Only the owner can change this."))
         return redirect("orgs:settings")
 
     return render(
@@ -85,14 +93,14 @@ def settings_view(request):
 @require_POST
 def remove_member(request, pk):
     if request.membership.role != Membership.Role.OWNER:
-        messages.error(request, "मालिकले मात्र हटाउन सक्नुहुन्छ.")
+        messages.error(request, _("Only the owner can remove members."))
         return redirect("orgs:settings")
     membership = get_object_or_404(
         Membership, pk=pk, organization=request.organization
     )
     if membership.user_id == request.user.id:
-        messages.error(request, "आफैंलाई हटाउन मिल्दैन.")
+        messages.error(request, _("You cannot remove yourself."))
     else:
         membership.delete()
-        messages.success(request, "सदस्य हटाइयो.")
+        messages.success(request, _("Member removed."))
     return redirect("orgs:settings")

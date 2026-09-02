@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{% if vendor %}{{ vendor }}{% else %}नयाँ आपूर्तिकर्ता{% endif %}{% endblock %}
+{% load i18n %}
+{% block title %}{% if vendor %}{{ vendor }}{% else %}{% translate 'New supplier' %}{% endif %}{% endblock %}
 {% block content %}
 <div class="max-w-2xl mx-auto">
-  <h1 class="text-2xl font-bold mb-4">{% if vendor %}आपूर्तिकर्ता सम्पादन{% else %}नयाँ आपूर्तिकर्ता{% endif %}</h1>
+  <h1 class="text-2xl font-bold mb-4">{% if vendor %}{% translate 'Edit supplier' %}{% else %}{% translate 'New supplier' %}{% endif %}</h1>
   <form method="post" class="card bg-base-100 border border-base-300">
     {% csrf_token %}
     <div class="card-body grid gap-3 sm:grid-cols-2">
@@ -14,8 +15,8 @@
         </label>
       {% endfor %}
       <div class="sm:col-span-2 flex justify-end gap-2">
-        <a href="{% url 'chalani:vendor_list' %}" class="btn btn-ghost">रद्द</a>
-        <button class="btn btn-primary">सुरक्षित गर्नुहोस्</button>
+        <a href="{% url 'chalani:vendor_list' %}" class="btn btn-ghost">{% translate 'Cancel' %}</a>
+        <button class="btn btn-primary">{% translate 'Save' %}</button>
       </div>
     </div>
   </form>

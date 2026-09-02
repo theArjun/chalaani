@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
 
 from .forms import LoginForm, SignupForm
+from django.utils.translation import gettext as _
 
 
 class ChalaaniLoginView(LoginView):
@@ -24,7 +25,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "स्वागत छ! अब पहिलो चलानीको फोटो अपलोड गर्नुहोस्.")
+            messages.success(request, _("Welcome! Now upload a photo of your first chalani."))
             return redirect("chalani:dashboard")
     else:
         form = SignupForm()

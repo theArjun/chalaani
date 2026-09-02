@@ -22,6 +22,7 @@ from nepal import dates as npdates
 from nepal.units import UNIT_CHOICES, normalise_unit
 from nepal.validators import validate_nepali_phone, validate_pan, validate_vehicle_no
 from orgs.models import OrgScoped, OrgScopedQuerySet
+from django.utils.translation import gettext_lazy as _
 
 
 def chalani_upload_path(instance, filename):
@@ -38,11 +39,11 @@ def _search_key(*parts) -> str:
 
 class Vendor(OrgScoped):
     name = models.CharField("Supplier name", max_length=200)
-    name_np = models.CharField("आपूर्तिकर्ताको नाम", max_length=200, blank=True)
+    name_np = models.CharField(_("Supplier name (Nepali)"), max_length=200, blank=True)
     pan_no = models.CharField("PAN/VAT", max_length=20, blank=True, validators=[validate_pan])
-    phone = models.CharField("फोन", max_length=20, blank=True, validators=[validate_nepali_phone])
-    address = models.CharField("ठेगाना", max_length=200, blank=True)
-    district = models.CharField("जिल्ला", max_length=60, blank=True)
+    phone = models.CharField(_("Phone"), max_length=20, blank=True, validators=[validate_nepali_phone])
+    address = models.CharField(_("Address"), max_length=200, blank=True)
+    district = models.CharField(_("District"), max_length=60, blank=True)
     is_active = models.BooleanField(default=True)
     search_key = models.CharField(max_length=420, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,10 +65,10 @@ class Vendor(OrgScoped):
 
 class Item(OrgScoped):
     name = models.CharField("Item name", max_length=200)
-    name_np = models.CharField("सामानको नाम", max_length=200, blank=True)
-    unit = models.CharField("इकाई", max_length=20, choices=UNIT_CHOICES, default="pcs")
+    name_np = models.CharField(_("Item name (Nepali)"), max_length=200, blank=True)
+    unit = models.CharField(_("Unit"), max_length=20, choices=UNIT_CHOICES, default="pcs")
     default_rate = models.DecimalField(
-        "सामान्य दर", max_digits=12, decimal_places=2, null=True, blank=True
+        _("Default rate"), max_digits=12, decimal_places=2, null=True, blank=True
     )
     is_active = models.BooleanField(default=True)
     search_key = models.CharField(max_length=420, blank=True, db_index=True)
@@ -108,23 +109,23 @@ class ChalaniQuerySet(OrgScopedQuerySet):
 
 class Chalani(OrgScoped):
     class Status(models.TextChoices):
-        EXTRACTING = "extracting", "प्रशोधन हुँदै (Extracting)"
-        DRAFT = "draft", "मस्यौदा (Draft)"
-        VERIFIED = "verified", "प्रमाणित (Verified)"
-        BILLED = "billed", "बिल भयो (Billed)"
+        EXTRACTING = "extracting", _("Extracting")
+        DRAFT = "draft", _("Draft")
+        VERIFIED = "verified", _("Verified")
+        BILLED = "billed", _("Billed")
 
     vendor = models.ForeignKey(
         Vendor, null=True, blank=True, on_delete=models.PROTECT, related_name="chalanis"
     )
-    chalani_no = models.CharField("चलानी नं.", max_length=50, blank=True)
-    date = models.DateField("मिति (ई.सं.)", null=True, blank=True)
-    date_bs = models.CharField("मिति (बि.सं.)", max_length=12, blank=True)
-    fiscal_year = models.CharField("आ.व.", max_length=9, blank=True, db_index=True)
+    chalani_no = models.CharField(_("Chalani no."), max_length=50, blank=True)
+    date = models.DateField(_("Date (AD)"), null=True, blank=True)
+    date_bs = models.CharField(_("Date (BS)"), max_length=12, blank=True)
+    fiscal_year = models.CharField(_("Fiscal year"), max_length=9, blank=True, db_index=True)
     vehicle_no = models.CharField(
-        "गाडी नं.", max_length=30, blank=True, validators=[validate_vehicle_no]
+        _("Vehicle no."), max_length=30, blank=True, validators=[validate_vehicle_no]
     )
-    received_by = models.CharField("बुझिलिनेको नाम", max_length=100, blank=True)
-    remarks = models.CharField("कैफियत", max_length=300, blank=True)
+    received_by = models.CharField(_("Received by"), max_length=100, blank=True)
+    remarks = models.CharField(_("Remarks"), max_length=300, blank=True)
     photo = models.ImageField(upload_to=chalani_upload_path, blank=True)
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.DRAFT)
     extracted_by_ai = models.BooleanField(default=False)
@@ -166,7 +167,7 @@ class Chalani(OrgScoped):
 
     def __str__(self):
         label = self.chalani_no or f"#{self.pk}"
-        return f"{label} · {self.vendor or 'अज्ञात आपूर्तिकर्ता'}"
+        return f"{label} · {self.vendor or _('unknown supplier')}"
 
     def get_absolute_url(self):
         return reverse("chalani:detail", args=[self.pk])
@@ -218,15 +219,15 @@ class Chalani(OrgScoped):
         """Human-readable list of what still blocks verification."""
         gaps = []
         if not self.vendor_id:
-            gaps.append("आपूर्तिकर्ता छानिएको छैन")
+            gaps.append(_("no supplier chosen"))
         if not self.chalani_no:
-            gaps.append("चलानी नम्बर छैन")
+            gaps.append(_("no chalani number"))
         if not self.date:
-            gaps.append("मिति छैन")
+            gaps.append(_("no date"))
         if not self.items.exists():
-            gaps.append("कुनै सामान थपिएको छैन")
+            gaps.append(_("no goods added"))
         elif self.items.filter(item__isnull=True).exists():
-            gaps.append("केही लाइन क्याटलगसँग जोडिएका छैनन्")
+            gaps.append(_("some lines are not linked to the catalog"))
         return gaps
 
 
@@ -235,10 +236,10 @@ class ChalaniItem(models.Model):
     item = models.ForeignKey(
         Item, null=True, blank=True, on_delete=models.PROTECT, related_name="chalani_lines"
     )
-    description = models.CharField("कागजमा लेखिएको", max_length=200)
-    qty = models.DecimalField("परिमाण", max_digits=12, decimal_places=3)
-    unit = models.CharField("इकाई", max_length=20, choices=UNIT_CHOICES, default="pcs")
-    rate = models.DecimalField("दर", max_digits=12, decimal_places=2, null=True, blank=True)
+    description = models.CharField(_("As written on paper"), max_length=200)
+    qty = models.DecimalField(_("Qty"), max_digits=12, decimal_places=3)
+    unit = models.CharField(_("Unit"), max_length=20, choices=UNIT_CHOICES, default="pcs")
+    rate = models.DecimalField(_("Rate"), max_digits=12, decimal_places=2, null=True, blank=True)
     line_no = models.PositiveSmallIntegerField(default=0)
 
     class Meta:

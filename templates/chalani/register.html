@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% load nepal %}
-{% block title %}चलानी दर्ता{% endblock %}
+{% load nepal i18n %}
+{% block title %}{% translate 'Chalani register' %}{% endblock %}
 
 {% block content %}
 <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
   <div>
-    <h1 class="text-2xl font-bold">चलानी दर्ता</h1>
-    <p class="text-sm opacity-60">Chalani register · आ.व. {{ current_fy|nepnum }}</p>
+    <h1 class="text-2xl font-bold">{% translate 'Chalani register' %}</h1>
+    <p class="text-sm opacity-60">{% translate 'Delivery challan register' %} · {% translate 'FY' %} {{ current_fy|num }}</p>
   </div>
   <div class="flex gap-2">
     <a class="btn btn-outline btn-sm" href="{% url 'chalani:export_csv' %}?{{ request.GET.urlencode }}">CSV</a>
-    <a class="btn btn-primary btn-sm" href="{% url 'chalani:upload' %}">+ नयाँ चलानी</a>
+    <a class="btn btn-primary btn-sm" href="{% url 'chalani:upload' %}">{% translate '+ New chalani' %}</a>
   </div>
 </div>
 
@@ -23,44 +23,44 @@
       hx-indicator="#filter-spinner">
   <div class="card-body p-4 grid gap-3 md:grid-cols-6 grid-cols-1 items-end">
     <label class="form-control md:col-span-2">
-      <span class="label-text text-xs mb-1">खोज्नुहोस्</span>
+      <span class="label-text text-xs mb-1">{% translate 'Search' %}</span>
       <input type="search" name="q" value="{{ filters.q }}" class="input input-bordered input-sm w-full"
-             placeholder="चलानी नं., आपूर्तिकर्ता, गाडी, सामान…">
+             placeholder="{% translate 'Chalani no., supplier, vehicle, item…' %}">
     </label>
     <label class="form-control">
-      <span class="label-text text-xs mb-1">स्थिति</span>
+      <span class="label-text text-xs mb-1">{% translate 'Status' %}</span>
       <select name="status" class="select select-bordered select-sm w-full">
-        <option value="">सबै</option>
+        <option value="">{% translate 'All' %}</option>
         {% for value, label in statuses %}
           <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
     </label>
     <label class="form-control">
-      <span class="label-text text-xs mb-1">आपूर्तिकर्ता</span>
+      <span class="label-text text-xs mb-1">{% translate 'Suppliers' %}</span>
       <select name="vendor" class="select select-bordered select-sm w-full">
-        <option value="">सबै</option>
+        <option value="">{% translate 'All' %}</option>
         {% for vendor in vendors %}
           <option value="{{ vendor.pk }}" {% if filters.vendor == vendor.pk|stringformat:"s" %}selected{% endif %}>{{ vendor }}</option>
         {% endfor %}
       </select>
     </label>
     <label class="form-control">
-      <span class="label-text text-xs mb-1">आ.व.</span>
+      <span class="label-text text-xs mb-1">{% translate 'FY' %}</span>
       <select name="fy" class="select select-bordered select-sm w-full">
-        <option value="">सबै</option>
+        <option value="">{% translate 'All' %}</option>
         {% for year in fiscal_years %}
-          <option value="{{ year }}" {% if filters.fy == year %}selected{% endif %}>{{ year|nepnum }}</option>
+          <option value="{{ year }}" {% if filters.fy == year %}selected{% endif %}>{{ year|num }}</option>
         {% endfor %}
       </select>
     </label>
     <div class="grid grid-cols-2 gap-2">
       <label class="form-control">
-        <span class="label-text text-xs mb-1">देखि (बि.सं.)</span>
+        <span class="label-text text-xs mb-1">{% translate 'From (BS)' %}</span>
         <input name="from" value="{{ filters.from }}" class="input input-bordered input-sm w-full font-mono" placeholder="2082-04-01">
       </label>
       <label class="form-control">
-        <span class="label-text text-xs mb-1">सम्म</span>
+        <span class="label-text text-xs mb-1">{% translate 'To' %}</span>
         <input name="to" value="{{ filters.to }}" class="input input-bordered input-sm w-full font-mono" placeholder="2082-12-30">
       </label>
     </div>
@@ -71,16 +71,16 @@
 <div id="register-results">
   <div class="stats stats-horizontal bg-base-100 border border-base-300 mb-4 w-full">
     <div class="stat py-3">
-      <div class="stat-title text-xs">चलानी संख्या</div>
-      <div class="stat-value text-2xl">{{ totals.count|nepnum }}</div>
+      <div class="stat-title text-xs">{% translate 'Chalani count' %}</div>
+      <div class="stat-value text-2xl">{{ totals.count|num }}</div>
     </div>
     <div class="stat py-3">
-      <div class="stat-title text-xs">जम्मा रकम</div>
-      <div class="stat-value text-2xl">रू. {{ totals.amount|nprs }}</div>
+      <div class="stat-title text-xs">{% translate 'Total amount' %}</div>
+      <div class="stat-value text-2xl">{% translate 'Rs.' %} {{ totals.amount|money }}</div>
     </div>
     <div class="stat py-3">
-      <div class="stat-title text-xs">प्रमाणित हुन बाँकी</div>
-      <div class="stat-value text-2xl {% if totals.pending %}text-warning{% endif %}">{{ totals.pending|nepnum }}</div>
+      <div class="stat-title text-xs">{% translate 'Awaiting verification' %}</div>
+      <div class="stat-value text-2xl {% if totals.pending %}text-warning{% endif %}">{{ totals.pending|num }}</div>
       <div class="stat-desc"><span id="filter-spinner" class="htmx-indicator loading loading-dots loading-xs"></span></div>
     </div>
   </div>
@@ -90,13 +90,13 @@
       <table class="table table-zebra table-pin-rows">
         <thead>
           <tr>
-            <th>मिति</th>
-            <th>चलानी नं.</th>
-            <th>आपूर्तिकर्ता</th>
-            <th>गाडी नं.</th>
-            <th class="text-right">लाइन</th>
-            <th class="text-right">रकम (रू.)</th>
-            <th>स्थिति</th>
+            <th>{% translate 'Date' %}</th>
+            <th>{% translate 'Chalani no.' %}</th>
+            <th>{% translate 'Suppliers' %}</th>
+            <th>{% translate 'Vehicle no.' %}</th>
+            <th class="text-right">{% translate 'Lines' %}</th>
+            <th class="text-right">{% translate 'Amount (Rs.)' %}</th>
+            <th>{% translate 'Status' %}</th>
           </tr>
         </thead>
         <tbody>
@@ -104,18 +104,18 @@
           <tr class="hover cursor-pointer" onclick="window.location='{{ chalani.get_absolute_url }}'">
             <td class="whitespace-nowrap">
               <a href="{{ chalani.get_absolute_url }}" class="link link-hover">
-                {% if chalani.date %}{{ chalani.date|bs_np }}{% else %}<span class="opacity-40">—</span>{% endif %}
+                {% if chalani.date %}{{ chalani.date|bs_date }}{% else %}<span class="opacity-40">—</span>{% endif %}
               </a>
-              <div class="text-xs opacity-40">{{ chalani.date|date:"Y-m-d" }}</div>
+              {% if chalani.date %}<div class="text-xs opacity-40" title="{% translate 'AD' %} {{ chalani.date|date:"Y-m-d" }}">{{ chalani.date|ago }}</div>{% endif %}
             </td>
             <td class="font-mono">{{ chalani.chalani_no|default:"—" }}</td>
             <td>
               {% if chalani.vendor %}{{ chalani.vendor }}
-              {% else %}<span class="badge badge-warning badge-sm">जोडिएको छैन</span>{% endif %}
+              {% else %}<span class="badge badge-warning badge-sm">{% translate 'Not linked' %}</span>{% endif %}
             </td>
             <td class="font-mono text-sm">{{ chalani.vehicle_no|default:"—" }}</td>
-            <td class="text-right tabular">{{ chalani.line_count|nepnum }}</td>
-            <td class="text-right tabular font-medium">{{ chalani.total|default_if_none:0|nprs }}</td>
+            <td class="text-right tabular">{{ chalani.line_count|num }}</td>
+            <td class="text-right tabular font-medium">{{ chalani.total|default_if_none:0|money }}</td>
             <td>
               <span class="badge {{ chalani.status|status_badge }} badge-sm whitespace-nowrap">
                 {% if chalani.status == "extracting" %}<span class="loading loading-spinner loading-xs mr-1"></span>{% endif %}
@@ -127,9 +127,9 @@
         {% empty %}
           <tr>
             <td colspan="7" class="text-center py-16">
-              <p class="text-lg mb-1">कुनै चलानी भेटिएन</p>
-              <p class="text-sm opacity-60 mb-4">कागजको फोटो खिच्नुहोस् — बाँकी काम AI ले गर्छ.</p>
-              <a href="{% url 'chalani:upload' %}" class="btn btn-primary btn-sm">पहिलो चलानी थप्नुहोस्</a>
+              <p class="text-lg mb-1">{% translate 'No chalani found' %}</p>
+              <p class="text-sm opacity-60 mb-4">{% translate 'Photograph the slip — AI does the rest.' %}</p>
+              <a href="{% url 'chalani:upload' %}" class="btn btn-primary btn-sm">{% translate 'Add the first chalani' %}</a>
             </td>
           </tr>
         {% endfor %}

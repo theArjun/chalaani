@@ -1,71 +1,71 @@
 {% extends "base.html" %}
-{% load nepal %}
-{% block title %}रिपोर्ट{% endblock %}
+{% load nepal i18n %}
+{% block title %}{% translate 'Report' %}{% endblock %}
 {% block content %}
 <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
   <div>
-    <h1 class="text-2xl font-bold">आपूर्तिकर्ता अनुसार रिपोर्ट</h1>
+    <h1 class="text-2xl font-bold">{% translate 'Supplier-wise report' %}</h1>
     <p class="text-sm opacity-60">
-      आ.व. {{ fy|nepnum }} · {{ period.0|bs_np }} देखि {{ period.1|bs_np }} सम्म
+      {% translate 'FY' %} {{ fy|num }} · {{ period.0|bs_date }} {% translate 'From' %} {{ period.1|bs_date }} {% translate 'To' %}
     </p>
   </div>
   <form method="get" class="join">
     <select name="fy" class="select select-bordered select-sm join-item" onchange="this.form.submit()">
-      {% for year in fiscal_years %}<option value="{{ year }}" {% if year == fy %}selected{% endif %}>आ.व. {{ year|nepnum }}</option>{% endfor %}
+      {% for year in fiscal_years %}<option value="{{ year }}" {% if year == fy %}selected{% endif %}>{% translate 'FY' %} {{ year|num }}</option>{% endfor %}
     </select>
-    <button class="btn btn-sm join-item">हेर्नुहोस्</button>
+    <button class="btn btn-sm join-item">{% translate 'Show' %}</button>
   </form>
 </div>
 
 <div class="grid gap-4 lg:grid-cols-2">
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body p-4">
-      <h2 class="font-semibold mb-2">आपूर्तिकर्ता अनुसार</h2>
+      <h2 class="font-semibold mb-2">{% translate 'By supplier' %}</h2>
       <div class="overflow-x-auto">
         <table class="table table-sm table-zebra">
-          <thead><tr><th>आपूर्तिकर्ता</th><th class="text-right">चलानी</th><th class="text-right">प्रमाणित</th><th class="text-right">रकम (रू.)</th></tr></thead>
+          <thead><tr><th>{% translate 'Suppliers' %}</th><th class="text-right">{% translate 'Chalani' %}</th><th class="text-right">{% translate 'Verified' %}</th><th class="text-right">{% translate 'Amount (Rs.)' %}</th></tr></thead>
           <tbody>
             {% for row in rows %}
               <tr>
-                <td>{{ row.vendor__name_np|default:row.vendor__name|default:"— जोडिएको छैन —" }}</td>
-                <td class="text-right tabular">{{ row.chalani_count|nepnum }}</td>
-                <td class="text-right tabular">{{ row.verified|nepnum }}</td>
-                <td class="text-right tabular font-medium">{{ row.amount|default_if_none:0|nprs }}</td>
+                <td>{{ row.vendor__name_np|default:row.vendor__name|default:"{% translate '— not linked —' %}" }}</td>
+                <td class="text-right tabular">{{ row.chalani_count|num }}</td>
+                <td class="text-right tabular">{{ row.verified|num }}</td>
+                <td class="text-right tabular font-medium">{{ row.amount|default_if_none:0|money }}</td>
               </tr>
             {% empty %}
-              <tr><td colspan="4" class="text-center py-10 opacity-60">यस आ.व.मा चलानी छैन.</td></tr>
+              <tr><td colspan="4" class="text-center py-10 opacity-60">{% translate 'No chalani in this fiscal year.' %}</td></tr>
             {% endfor %}
           </tbody>
           {% if rows %}
             <tfoot>
               <tr class="font-semibold">
-                <td colspan="3">जम्मा</td>
-                <td class="text-right tabular">{{ grand_total|nprs }}</td>
+                <td colspan="3">{% translate 'Total' %}</td>
+                <td class="text-right tabular">{{ grand_total|money }}</td>
               </tr>
             </tfoot>
           {% endif %}
         </table>
       </div>
-      {% if grand_total %}<p class="text-xs opacity-60 mt-2">अक्षरुपी: {{ grand_total|in_words_np }}</p>{% endif %}
+      {% if grand_total %}<p class="text-xs opacity-60 mt-2">{% translate 'In words:' %} {{ grand_total|in_words }}</p>{% endif %}
     </div>
   </div>
 
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body p-4">
-      <h2 class="font-semibold mb-2">सामान अनुसार</h2>
+      <h2 class="font-semibold mb-2">{% translate 'By item' %}</h2>
       <div class="overflow-x-auto">
         <table class="table table-sm table-zebra">
-          <thead><tr><th>सामान</th><th class="text-right">परिमाण</th><th>इकाई</th><th class="text-right">रकम (रू.)</th></tr></thead>
+          <thead><tr><th>{% translate 'Items' %}</th><th class="text-right">{% translate 'Qty' %}</th><th>{% translate 'Unit' %}</th><th class="text-right">{% translate 'Amount (Rs.)' %}</th></tr></thead>
           <tbody>
             {% for row in item_rows %}
               <tr>
-                <td>{{ row.item__name_np|default:row.item__name|default:"— क्याटलगमा छैन —" }}</td>
+                <td>{{ row.item__name_np|default:row.item__name|default:"{% translate '— not in the catalog —' %}" }}</td>
                 <td class="text-right tabular">{{ row.total_qty|qty }}</td>
-                <td>{{ row.unit|unit_np }}</td>
-                <td class="text-right tabular font-medium">{{ row.amount|default_if_none:0|nprs }}</td>
+                <td>{{ row.unit|unit_label }}</td>
+                <td class="text-right tabular font-medium">{{ row.amount|default_if_none:0|money }}</td>
               </tr>
             {% empty %}
-              <tr><td colspan="4" class="text-center py-10 opacity-60">कुनै लाइन छैन.</td></tr>
+              <tr><td colspan="4" class="text-center py-10 opacity-60">{% translate 'No lines.' %}</td></tr>
             {% endfor %}
           </tbody>
         </table>

@@ -9,6 +9,7 @@ from nepal.forms import BikramSambatDateField, NepaliDecimalField
 from nepal.units import UNIT_CHOICES
 
 from .models import Chalani, ChalaniItem, Item, Vendor
+from django.utils.translation import gettext_lazy as _
 
 INPUT = "input input-bordered w-full"
 SELECT = "select select-bordered w-full"
@@ -32,14 +33,14 @@ class OrgFormMixin:
 
 class ChalaniUploadForm(forms.Form):
     photo = forms.ImageField(
-        label="चलानीको फोटो",
-        help_text="कागजको फोटो खिच्नुहोस् — AI ले पढेर मस्यौदा बनाउँछ.",
+        label=_("Photo of the chalani"),
+        help_text=_("Photograph the slip — AI reads it into a draft."),
         widget=forms.ClearableFileInput(
             attrs={"class": "file-input file-input-bordered w-full", "accept": "image/*", "capture": "environment"}
         ),
     )
     use_ai = forms.BooleanField(
-        label="AI ले पढोस् (Read it with AI)",
+        label=_("Read it with AI"),
         required=False,
         initial=True,
         widget=forms.CheckboxInput(attrs={"class": "toggle toggle-primary"}),
@@ -65,7 +66,7 @@ class ChalaniForm(OrgFormMixin, forms.ModelForm):
         self.fields["vendor"].queryset = Vendor.objects.for_org(self.organization).filter(
             is_active=True
         )
-        self.fields["vendor"].empty_label = "— आपूर्तिकर्ता छान्नुहोस् —"
+        self.fields["vendor"].empty_label = _("— choose a supplier —")
 
 
 class ChalaniItemForm(forms.ModelForm):
@@ -86,14 +87,14 @@ class ChalaniItemForm(forms.ModelForm):
         fields = ["item", "description", "qty", "unit", "rate"]
         widgets = {
             "item": forms.Select(attrs={"class": "select select-bordered select-sm w-full"}),
-            "description": forms.TextInput(attrs={"class": INPUT, "placeholder": "कागजमा जस्तो लेखिएको छ"}),
+            "description": forms.TextInput(attrs={"class": INPUT, "placeholder": _("exactly as the paper says")}),
             "unit": forms.Select(attrs={"class": "select select-bordered w-full"}, choices=UNIT_CHOICES),
         }
 
     def __init__(self, *args, organization=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["item"].queryset = Item.objects.for_org(organization).filter(is_active=True)
-        self.fields["item"].empty_label = "— क्याटलगमा जोड्नुहोस् —"
+        self.fields["item"].empty_label = _("— link to the catalog —")
         self.fields["item"].required = False
 
 
@@ -129,7 +130,7 @@ class VendorForm(OrgFormMixin, forms.ModelForm):
             "pan_no": forms.TextInput(attrs={"class": INPUT + " font-mono", "inputmode": "numeric", "maxlength": 9}),
             "phone": forms.TextInput(attrs={"class": INPUT + " font-mono", "inputmode": "tel"}),
             "address": forms.TextInput(attrs={"class": INPUT}),
-            "district": forms.TextInput(attrs={"class": INPUT, "placeholder": "काठमाडौँ"}),
+            "district": forms.TextInput(attrs={"class": INPUT, "placeholder": _("Kathmandu")}),
             "is_active": forms.CheckboxInput(attrs={"class": "toggle toggle-success"}),
         }
 

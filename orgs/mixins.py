@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from functools import wraps
+from django.utils.translation import gettext_lazy as _
 
 
 def org_required(view):
@@ -28,7 +29,7 @@ def verifier_required(view):
     @org_required
     def wrapper(request, *args, **kwargs):
         if not request.membership.can_verify:
-            raise PermissionDenied("यो काम गर्न म्यानेजर वा मालिक हुनुपर्छ.")
+            raise PermissionDenied(_("Only a manager or the owner can do this."))
         return view(request, *args, **kwargs)
 
     return wrapper

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 from orgs.models import Membership, Organization
+from django.utils.translation import gettext_lazy as _
 
 INPUT = "input input-bordered w-full"
 
@@ -17,18 +18,18 @@ class SignupForm(UserCreationForm):
     """One form creates the user, their firm, and the owner membership."""
 
     full_name_np = forms.CharField(
-        label="तपाईंको नाम", max_length=150, widget=forms.TextInput(attrs={"class": INPUT})
+        label=_("Your name"), max_length=150, widget=forms.TextInput(attrs={"class": INPUT})
     )
     phone = forms.CharField(
-        label="फोन", max_length=20, required=False, widget=forms.TextInput(attrs={"class": INPUT})
+        label=_("Phone"), max_length=20, required=False, widget=forms.TextInput(attrs={"class": INPUT})
     )
     organization_name = forms.CharField(
-        label="फर्मको नाम (English)",
+        label=_("Firm name (English)"),
         max_length=200,
         widget=forms.TextInput(attrs={"class": INPUT, "placeholder": "Shree Ram Traders"}),
     )
     organization_name_np = forms.CharField(
-        label="फर्मको नाम (नेपाली)",
+        label=_("Firm name (Nepali)"),
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={"class": INPUT, "placeholder": "श्री राम ट्रेडर्स"}),

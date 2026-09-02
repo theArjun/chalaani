@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-{% block title %}लगइन{% endblock %}
+{% load i18n %}
+{% block title %}{% translate 'Log in' %}{% endblock %}
 {% block content %}
 <div class="max-w-sm mx-auto mt-8">
   <div class="text-center mb-6">
     <div class="text-4xl mb-2">📋</div>
-    <h1 class="text-2xl font-bold">चलानी</h1>
-    <p class="text-sm opacity-60">कागजको चलानी, डिजिटल दर्ता</p>
+    <h1 class="text-2xl font-bold">{% translate 'Chalani' %}</h1>
+    <p class="text-sm opacity-60">{% translate 'Paper chalani, digital register' %}</p>
   </div>
   <form method="post" class="card bg-base-100 border border-base-300">
     {% csrf_token %}
@@ -18,8 +19,8 @@
           {% if field.errors %}<span class="text-error text-xs mt-1">{{ field.errors.0 }}</span>{% endif %}
         </label>
       {% endfor %}
-      <button class="btn btn-primary w-full mt-2">लगइन</button>
-      <p class="text-center text-sm opacity-70">खाता छैन? <a class="link link-primary" href="{% url 'accounts:signup' %}">दर्ता गर्नुहोस्</a></p>
+      <button class="btn btn-primary w-full mt-2">{% translate 'Log in' %}</button>
+      <p class="text-center text-sm opacity-70">{% translate 'No account?' %} <a class="link link-primary" href="{% url 'accounts:signup' %}">{% translate 'Create account' %}</a></p>
     </div>
   </form>
 </div>

@@ -1,6 +1,7 @@
 import datetime
 
 from django.test import SimpleTestCase
+from django.utils import translation
 
 from nepal import dates, numbers, units
 
@@ -58,3 +59,58 @@ class UnitTests(SimpleTestCase):
         self.assertEqual(units.normalise_unit("sq.ft"), "sqft")
         self.assertEqual(units.normalise_unit(None), "pcs")
         self.assertEqual(units.normalise_unit("something odd"), "pcs")
+
+
+class LocalisationTests(SimpleTestCase):
+    """The UI switches language; Bikram Sambat does not become Gregorian."""
+
+    def test_dates_stay_bikram_sambat_in_english(self):
+        from nepal.templatetags.nepal import bs_date, bs_date_long
+
+        ad = datetime.date(2025, 9, 2)
+        with translation.override("en"):
+            self.assertEqual(bs_date(ad), "17 Bhadau 2082")
+            self.assertEqual(bs_date_long(ad), "Mangalbar, 17 Bhadau 2082")
+        with translation.override("ne"):
+            self.assertEqual(bs_date(ad), "१७ भदौ २०८२")
+
+    def test_digits_and_money_follow_the_language(self):
+        from nepal.templatetags.nepal import money, num, qty
+
+        with translation.override("en"):
+            self.assertEqual(num("2082-05-17"), "2082-05-17")
+            self.assertEqual(money("1234567.5"), "12,34,567.50")
+            self.assertEqual(qty("12.500"), "12.5")
+        with translation.override("ne"):
+            self.assertEqual(num("2082-05-17"), "२०८२-०५-१७")
+            self.assertEqual(money("1234567.5"), "१२,३४,५६७.५०")
+            self.assertEqual(qty("12.500"), "१२.५")
+
+    def test_amount_in_words_follows_the_language(self):
+        from nepal.templatetags.nepal import in_words
+
+        with translation.override("en"):
+            self.assertIn("lakh", in_words("1234567"))
+        with translation.override("ne"):
+            self.assertIn("लाख", in_words("1234567"))
+
+    def test_unit_labels_follow_the_language(self):
+        from nepal.templatetags.nepal import unit_label
+
+        with translation.override("en"):
+            self.assertEqual(unit_label("bag"), "Bag / Sack")
+        with translation.override("ne"):
+            self.assertEqual(unit_label("bag"), "बोरा")
+
+    def test_relative_dates(self):
+        from nepal.templatetags.nepal import ago
+
+        today = datetime.date.today()
+        with translation.override("en"):
+            self.assertEqual(ago(today), "today")
+            self.assertEqual(ago(today - datetime.timedelta(days=1)), "yesterday")
+            self.assertEqual(ago(today - datetime.timedelta(days=5)), "5 days ago")
+            self.assertEqual(ago(today + datetime.timedelta(days=3)), "in 3 days")
+        with translation.override("ne"):
+            self.assertEqual(ago(today), "आज")
+            self.assertEqual(ago(today - datetime.timedelta(days=5)), "५ दिन अघि")

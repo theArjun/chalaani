@@ -16,12 +16,23 @@ def enqueue_extraction(chalani) -> str | None:
     With `Q_SYNC=1` (or a cluster that isn't running) django-q2 falls back to
     running the task inline, which is what the test suite relies on.
     """
+    from django.conf import settings
     from django_q.tasks import async_task
 
     from chalani.models import Chalani
 
     if not chalani.photo:
         return None
+    if not (settings.EXTRACTION_ENABLED and settings.ANTHROPIC_API_KEY):
+        # Never park a chalani in `extracting` when nothing can ever read it —
+        # leave an editable draft that says why.
+        from .chain import ExtractionUnavailable, build_chain
+
+        try:
+            build_chain()
+        except ExtractionUnavailable as exc:
+            _fail(chalani, str(exc))
+            return None
     Chalani.objects.filter(pk=chalani.pk).update(
         status=Chalani.Status.EXTRACTING, extraction_error=""
     )

@@ -7,16 +7,17 @@ from django.db import models
 from django.utils.text import slugify
 
 from nepal.validators import validate_nepali_phone, validate_pan
+from django.utils.translation import gettext_lazy as _
 
 
 class Organization(models.Model):
     name = models.CharField("Firm name", max_length=200)
-    name_np = models.CharField("फर्मको नाम", max_length=200, blank=True)
+    name_np = models.CharField(_("Firm name (Nepali)"), max_length=200, blank=True)
     slug = models.SlugField(max_length=60, unique=True)
     pan_no = models.CharField("PAN/VAT", max_length=20, blank=True, validators=[validate_pan])
     phone = models.CharField(max_length=20, blank=True, validators=[validate_nepali_phone])
-    address = models.CharField("ठेगाना", max_length=200, blank=True)
-    district = models.CharField("जिल्ला", max_length=60, blank=True)
+    address = models.CharField(_("Address"), max_length=200, blank=True)
+    district = models.CharField(_("District"), max_length=60, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -38,9 +39,9 @@ class Organization(models.Model):
 
 class Membership(models.Model):
     class Role(models.TextChoices):
-        OWNER = "owner", "मालिक (Owner)"
-        MANAGER = "manager", "म्यानेजर (Manager)"
-        STAFF = "staff", "कर्मचारी (Staff)"
+        OWNER = "owner", _("Owner")
+        MANAGER = "manager", _("Manager")
+        STAFF = "staff", _("Staff")
 
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name="memberships"

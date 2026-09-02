@@ -49,6 +49,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -100,8 +101,12 @@ LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "chalani:register"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
-# Nepal-specific locale defaults.
-LANGUAGE_CODE = "en-us"
+# Nepal-specific locale defaults. The UI ships in both नेपाली and English and
+# the user switches from the navbar; `ne` is the default because that is the
+# language on the paper.
+LANGUAGE_CODE = env("DJANGO_LANGUAGE_CODE", "ne")
+LANGUAGES = [("ne", "नेपाली"), ("en", "English")]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "Asia/Kathmandu"
 USE_I18N = True
 USE_TZ = True

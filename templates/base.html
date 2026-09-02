@@ -1,9 +1,9 @@
-{% load static nepal %}<!DOCTYPE html>
-<html lang="ne" data-theme="{{ theme|default:'corporate' }}">
+{% load static nepal i18n %}{% get_current_language as LANGUAGE_CODE %}{% get_available_languages as LANGUAGES %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" data-theme="{{ theme|default:'corporate' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}चलानी{% endblock %} · chalaani</title>
+  <title>{% block title %}{% translate 'Chalani' %}{% endblock %} · chalaani</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
   {% if TAILWIND_CDN %}
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
@@ -31,7 +31,7 @@
 
   <div class="drawer-content flex flex-col min-h-screen">
     <header class="navbar bg-base-100 border-b border-base-300 sticky top-0 z-30 gap-2">
-      <label for="nav-drawer" class="btn btn-ghost btn-square lg:hidden" aria-label="मेनु">
+      <label for="nav-drawer" class="btn btn-ghost btn-square lg:hidden" aria-label="{% translate 'Menu' %}">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </label>
 
@@ -43,7 +43,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </div>
             <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-40 w-72 p-2 shadow-lg border border-base-300">
-              <li class="menu-title">फर्म छान्नुहोस्</li>
+              <li class="menu-title">{% translate 'Choose a firm' %}</li>
               {% for m in memberships %}
                 <li>
                   <form method="post" action="{% url 'orgs:switch' m.organization_id %}">
@@ -55,20 +55,40 @@
                   </form>
                 </li>
               {% endfor %}
-              <li><a href="{% url 'orgs:create' %}">+ नयाँ फर्म दर्ता</a></li>
+              <li><a href="{% url 'orgs:create' %}">{% translate '+ Register a new firm' %}</a></li>
             </ul>
           </div>
         {% else %}
-          <span class="btn btn-ghost text-lg font-bold">चलानी</span>
+          <span class="btn btn-ghost text-lg font-bold">{% translate 'Chalani' %}</span>
         {% endif %}
       </div>
 
       {% if organization %}
         <a href="{% url 'chalani:upload' %}" class="btn btn-primary btn-sm gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3" stroke-width="2"/></svg>
-          <span class="hidden sm:inline">नयाँ चलानी</span>
+          <span class="hidden sm:inline">{% translate 'New chalani' %}</span>
         </a>
       {% endif %}
+
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-sm gap-1" aria-label="{% translate 'Language' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-width="2" d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>
+          <span class="text-xs font-semibold uppercase">{{ LANGUAGE_CODE }}</span>
+        </div>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-40 w-44 p-2 shadow-lg border border-base-300">
+          <li class="menu-title">{% translate 'Language' %}</li>
+          {% for code, name in LANGUAGES %}
+            <li>
+              <form method="post" action="{% url 'set_language' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <input type="hidden" name="language" value="{{ code }}">
+                <button type="submit" class="w-full text-left {% if code == LANGUAGE_CODE %}active{% endif %}">{{ name }}</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
 
       {% if user.is_authenticated %}
         <div class="dropdown dropdown-end">
@@ -80,10 +100,10 @@
           <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-40 w-56 p-2 shadow-lg border border-base-300">
             <li class="menu-title">{{ user.display_name }}</li>
             {% if membership %}<li class="px-4 pb-1 text-xs opacity-60">{{ membership.get_role_display }}</li>{% endif %}
-            <li><a href="{% url 'orgs:settings' %}">फर्म सेटिङ</a></li>
+            <li><a href="{% url 'orgs:settings' %}">{% translate 'Firm settings' %}</a></li>
             <li>
               <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}
-                <button type="submit" class="w-full text-left">लगआउट</button>
+                <button type="submit" class="w-full text-left">{% translate 'Log out' %}</button>
               </form>
             </li>
           </ul>
@@ -97,30 +117,30 @@
     </main>
 
     <footer class="footer footer-center p-4 text-xs text-base-content/50">
-      <p>आजको मिति: {{ today_bs }} · आ.व. {{ current_fy|nepnum }}</p>
+      <p>{% translate 'Today:' %} {{ today_bs }} {% translate '· FY' %} {{ current_fy|num }}</p>
     </footer>
   </div>
 
   <div class="drawer-side z-40">
-    <label for="nav-drawer" class="drawer-overlay" aria-label="बन्द गर्नुहोस्"></label>
+    <label for="nav-drawer" class="drawer-overlay" aria-label="{% translate 'Close' %}"></label>
     <aside class="bg-base-100 border-r border-base-300 min-h-full w-64">
       <div class="p-4 border-b border-base-300">
         <a href="{% url 'chalani:dashboard' %}" class="flex items-center gap-2">
           <span class="text-2xl">📋</span>
           <span>
-            <span class="block font-bold text-lg leading-tight">चलानी</span>
+            <span class="block font-bold text-lg leading-tight">{% translate 'Chalani' %}</span>
             <span class="block text-xs opacity-50 leading-tight">delivery challan register</span>
           </span>
         </a>
       </div>
       {% if organization %}
         <ul class="menu p-3 gap-1 w-full">
-          <li><a href="{% url 'chalani:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>ड्यासबोर्ड</a></li>
-          <li><a href="{% url 'chalani:register' %}" {% if request.resolver_match.url_name == 'register' %}class="active"{% endif %}>चलानी दर्ता</a></li>
-          <li><a href="{% url 'chalani:vendor_list' %}" {% if 'vendor' in request.resolver_match.url_name %}class="active"{% endif %}>आपूर्तिकर्ता</a></li>
-          <li><a href="{% url 'chalani:item_list' %}" {% if 'item' in request.resolver_match.url_name %}class="active"{% endif %}>सामान क्याटलग</a></li>
-          <li><a href="{% url 'chalani:vendor_report' %}" {% if request.resolver_match.url_name == 'vendor_report' %}class="active"{% endif %}>रिपोर्ट</a></li>
-          <li class="mt-2 border-t border-base-300 pt-2"><a href="{% url 'orgs:settings' %}">फर्म सेटिङ</a></li>
+          <li><a href="{% url 'chalani:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>{% translate 'Dashboard' %}</a></li>
+          <li><a href="{% url 'chalani:register' %}" {% if request.resolver_match.url_name == 'register' %}class="active"{% endif %}>{% translate 'Chalani register' %}</a></li>
+          <li><a href="{% url 'chalani:vendor_list' %}" {% if 'vendor' in request.resolver_match.url_name %}class="active"{% endif %}>{% translate 'Suppliers' %}</a></li>
+          <li><a href="{% url 'chalani:item_list' %}" {% if 'item' in request.resolver_match.url_name %}class="active"{% endif %}>{% translate 'Item catalog' %}</a></li>
+          <li><a href="{% url 'chalani:vendor_report' %}" {% if request.resolver_match.url_name == 'vendor_report' %}class="active"{% endif %}>{% translate 'Report' %}</a></li>
+          <li class="mt-2 border-t border-base-300 pt-2"><a href="{% url 'orgs:settings' %}">{% translate 'Firm settings' %}</a></li>
         </ul>
       {% endif %}
     </aside>

@@ -339,3 +339,54 @@ class UploadTests(TestCase):
         chalani.refresh_from_db()
         self.assertEqual(chalani.status, Chalani.Status.DRAFT)
         self.assertIn("API down", chalani.extraction_error)
+
+
+class LanguageSwitchTests(TestCase):
+    """Nepali by default, English on request — and BS dates in both."""
+
+    def setUp(self):
+        self.org, self.user = make_org()
+        vendor = Vendor.objects.create(organization=self.org, name="Himal Cement")
+        self.chalani = Chalani.objects.create(
+            organization=self.org, created_by=self.user, vendor=vendor,
+            chalani_no="C/1204", date_bs="2082-05-17",
+        )
+        self.client.force_login(self.user)
+
+    def test_default_language_is_nepali(self):
+        response = self.client.get(reverse("chalani:register"))
+        self.assertContains(response, "चलानी दर्ता")
+        self.assertContains(response, "१७ भदौ २०८२")
+
+    def test_english_ui_keeps_bikram_sambat_dates(self):
+        response = self.client.get(
+            reverse("chalani:register"), headers={"accept-language": "en"}
+        )
+        self.assertContains(response, "Chalani register")
+        self.assertContains(response, "17 Bhadau 2082")  # BS, in Latin script
+        self.assertNotContains(response, "१७ भदौ")
+
+    def test_set_language_sticks_for_later_requests(self):
+        self.client.post(
+            reverse("set_language"),
+            {"language": "en", "next": reverse("chalani:register")},
+        )
+        response = self.client.get(reverse("chalani:register"))
+        self.assertContains(response, "Chalani register")
+        self.client.post(
+            reverse("set_language"),
+            {"language": "ne", "next": reverse("chalani:register")},
+        )
+        self.assertContains(self.client.get(reverse("chalani:register")), "चलानी दर्ता")
+
+    def test_relative_date_is_shown_next_to_the_bs_date(self):
+        from nepal.dates import bs_to_ad
+
+        recent = Chalani.objects.create(
+            organization=self.org, created_by=self.user, chalani_no="C/1205",
+        )
+        recent.date = bs_to_ad("2082-05-17")
+        response = self.client.get(
+            reverse("chalani:register"), headers={"accept-language": "en"}
+        )
+        self.assertRegex(response.content.decode(), r"\d+ (day|month|year)s? ago")

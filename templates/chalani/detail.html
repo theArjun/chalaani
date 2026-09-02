@@ -1,40 +1,40 @@
 {% extends "base.html" %}
-{% load nepal %}
-{% block title %}चलानी {{ chalani.chalani_no|default:chalani.pk }}{% endblock %}
+{% load nepal i18n %}
+{% block title %}{% translate 'Chalani' %} {{ chalani.chalani_no|default:chalani.pk }}{% endblock %}
 
 {% block content %}
 <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
   <div>
     <div class="breadcrumbs text-sm p-0 opacity-60">
-      <ul><li><a href="{% url 'chalani:register' %}">चलानी दर्ता</a></li><li>{{ chalani.chalani_no|default:"मस्यौदा" }}</li></ul>
+      <ul><li><a href="{% url 'chalani:register' %}">{% translate 'Chalani register' %}</a></li><li>{{ chalani.chalani_no|default:"{% translate 'Draft' %}" }}</li></ul>
     </div>
     <h1 class="text-2xl font-bold flex items-center gap-2">
-      {{ chalani.chalani_no|default:"चलानी नं. छैन" }}
+      {{ chalani.chalani_no|default:"{% translate 'No chalani no.' %}" }}
       <span class="badge {{ chalani.status|status_badge }}">{{ chalani.get_status_display }}</span>
-      {% if chalani.extracted_by_ai %}<span class="badge badge-outline badge-sm">AI ले पढेको</span>{% endif %}
+      {% if chalani.extracted_by_ai %}<span class="badge badge-outline badge-sm">{% translate 'Read by AI' %}</span>{% endif %}
     </h1>
     <p class="text-sm opacity-60">
-      {% if chalani.date %}{{ chalani.date|bs_long }} · ई.सं. {{ chalani.date|date:"Y-m-d" }} · आ.व. {{ chalani.fiscal_year|nepnum }}{% endif %}
+      {% if chalani.date %}{{ chalani.date|bs_date_long }} {% translate '· AD' %} {{ chalani.date|date:"Y-m-d" }} {% translate '· FY' %} {{ chalani.fiscal_year|num }} · <span class="opacity-70">{{ chalani.date|ago }}</span>{% endif %}
     </p>
   </div>
 
   <div class="flex flex-wrap gap-2">
     {% if chalani.status == "draft" and can_verify %}
       <form method="post" action="{% url 'chalani:verify' chalani.pk %}">{% csrf_token %}
-        <button class="btn btn-success btn-sm" {% if gaps %}disabled title="{{ gaps|join:', ' }}"{% endif %}>✓ प्रमाणित गर्नुहोस्</button>
+        <button class="btn btn-success btn-sm" {% if gaps %}disabled title="{{ gaps|join:', ' }}"{% endif %}>{% translate '✓ Verify' %}</button>
       </form>
     {% elif chalani.status == "verified" and can_verify %}
       <form method="post" action="{% url 'chalani:bill' chalani.pk %}">{% csrf_token %}
-        <button class="btn btn-info btn-sm">बिल भयो भन्नुहोस्</button>
+        <button class="btn btn-info btn-sm">{% translate 'Mark as billed' %}</button>
       </form>
       <form method="post" action="{% url 'chalani:reopen' chalani.pk %}">{% csrf_token %}
-        <button class="btn btn-ghost btn-sm">मस्यौदामा फर्काउनुहोस्</button>
+        <button class="btn btn-ghost btn-sm">{% translate 'Send back to draft' %}</button>
       </form>
     {% endif %}
     {% if chalani.status == "draft" %}
       <form method="post" action="{% url 'chalani:delete' chalani.pk %}"
-            onsubmit="return confirm('यो मस्यौदा मेट्ने?')">{% csrf_token %}
-        <button class="btn btn-ghost btn-sm text-error">मेट्नुहोस्</button>
+            onsubmit="return confirm('{% translate 'Delete this draft?' %}')">{% csrf_token %}
+        <button class="btn btn-ghost btn-sm text-error">{% translate 'Delete' %}</button>
       </form>
     {% endif %}
   </div>
@@ -49,18 +49,18 @@
     <div class="alert alert-warning mb-4">
       <span class="loading loading-spinner"></span>
       <div>
-        <p class="font-semibold">AI ले फोटो पढ्दै छ…</p>
-        <p class="text-sm opacity-70">केही सेकेन्डमा मस्यौदा आफैँ देखिनेछ. यो पेज खुला राख्नुहोस्.</p>
+        <p class="font-semibold">{% translate 'AI is reading the photo…' %}</p>
+        <p class="text-sm opacity-70">{% translate 'The draft appears here in a few seconds. Keep this page open.' %}</p>
       </div>
     </div>
   {% elif chalani.extraction_error %}
     <div class="alert alert-error mb-4">
       <div>
-        <p class="font-semibold">AI ले पढ्न सकेन — हातैले भर्नुहोस्.</p>
+        <p class="font-semibold">{% translate 'AI could not read it — please fill it in by hand.' %}</p>
         <p class="text-xs font-mono opacity-70 break-all">{{ chalani.extraction_error }}</p>
       </div>
       <form method="post" action="{% url 'chalani:reextract' chalani.pk %}">{% csrf_token %}
-        <button class="btn btn-sm">फेरि प्रयास</button>
+        <button class="btn btn-sm">{% translate 'Try again' %}</button>
       </form>
     </div>
   {% endif %}
@@ -70,7 +70,7 @@
 {% if gaps and chalani.status == "draft" %}
   <div class="alert alert-info mb-4">
     <div>
-      <p class="font-semibold">प्रमाणित गर्न बाँकी:</p>
+      <p class="font-semibold">{% translate 'Still needed before verifying:' %}</p>
       <ul class="list-disc list-inside text-sm">{% for gap in gaps %}<li>{{ gap }}</li>{% endfor %}</ul>
     </div>
   </div>
@@ -80,19 +80,19 @@
   <div class="order-2 lg:order-1">
     <div class="card bg-base-100 border border-base-300 lg:sticky lg:top-20">
       <div class="card-body p-3">
-        <h2 class="font-semibold text-sm mb-1">कागजको फोटो</h2>
+        <h2 class="font-semibold text-sm mb-1">{% translate 'Photo of the slip' %}</h2>
         {% if chalani.photo %}
           <a href="{% url 'chalani:photo' chalani.pk %}" target="_blank" rel="noopener">
-            <img src="{% url 'chalani:photo' chalani.pk %}" alt="चलानी फोटो"
+            <img src="{% url 'chalani:photo' chalani.pk %}" alt="{% translate 'Chalani photo' %}"
                  class="rounded-lg border border-base-300 w-full object-contain max-h-[70vh] bg-base-200">
           </a>
-          <p class="text-xs opacity-50 mt-1">पूरा आकारमा हेर्न फोटोमा क्लिक गर्नुहोस्.</p>
+          <p class="text-xs opacity-50 mt-1">{% translate 'Click the photo to see it full size.' %}</p>
         {% else %}
-          <div class="grid place-items-center h-48 bg-base-200 rounded-lg text-sm opacity-60">फोटो छैन</div>
+          <div class="grid place-items-center h-48 bg-base-200 rounded-lg text-sm opacity-60">{% translate 'No photo' %}</div>
         {% endif %}
         <div class="text-xs opacity-50 mt-2 space-y-0.5">
-          <p>थपियो: {{ chalani.created_by.display_name }} · {{ chalani.created_at|date:"Y-m-d H:i" }}</p>
-          {% if chalani.verified_by %}<p>प्रमाणित: {{ chalani.verified_by.display_name }} · {{ chalani.verified_at|date:"Y-m-d H:i" }}</p>{% endif %}
+          <p title="{{ chalani.created_at|date:"Y-m-d H:i" }}">{% translate 'Added:' %} {{ chalani.created_by.display_name }} · {{ chalani.created_at|ago }}</p>
+          {% if chalani.verified_by %}<p title="{{ chalani.verified_at|date:"Y-m-d H:i" }}">{% translate 'Verified:' %} {{ chalani.verified_by.display_name }} · {{ chalani.verified_at|ago }}</p>{% endif %}
         </div>
       </div>
     </div>
@@ -102,13 +102,13 @@
     {% csrf_token %}
     <div class="card bg-base-100 border border-base-300">
       <div class="card-body p-4">
-        <h2 class="font-semibold mb-2">चलानीको विवरण</h2>
+        <h2 class="font-semibold mb-2">{% translate 'Chalani details' %}</h2>
         <div class="grid gap-3 sm:grid-cols-2">
           <label class="form-control">
             <span class="label-text text-xs mb-1">{{ form.vendor.label }}</span>
             {{ form.vendor }}
             {% if form.vendor.errors %}<span class="text-error text-xs mt-1">{{ form.vendor.errors.0 }}</span>{% endif %}
-            <a class="link link-hover text-xs mt-1 opacity-60" href="{% url 'chalani:vendor_create' %}">+ नयाँ आपूर्तिकर्ता दर्ता</a>
+            <a class="link link-hover text-xs mt-1 opacity-60" href="{% url 'chalani:vendor_create' %}">{% translate '+ Register a new supplier' %}</a>
           </label>
           <label class="form-control">
             <span class="label-text text-xs mb-1">{{ form.chalani_no.label }}</span>
@@ -120,7 +120,7 @@
               <span>{{ form.date_bs.label }}</span>
               <button type="button" class="link link-primary text-xs"
                       hx-get="{% url 'nepal:date_input' %}?name=date_bs&value=today"
-                      hx-target="closest .bs-date" hx-swap="outerHTML">आज</button>
+                      hx-target="closest .bs-date" hx-swap="outerHTML">{% translate 'Today' %}</button>
             </span>
             {{ form.date_bs }}
             {% if form.date_bs.errors %}<span class="text-error text-xs mt-1">{{ form.date_bs.errors.0 }}</span>{% endif %}
@@ -144,11 +144,11 @@
     <div class="card bg-base-100 border border-base-300">
       <div class="card-body p-4">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="font-semibold">सामानको विवरण</h2>
+          <h2 class="font-semibold">{% translate 'Goods' %}</h2>
           <button type="button" class="btn btn-outline btn-sm"
                   hx-get="{% url 'chalani:add_row' chalani.pk %}"
                   hx-include="[name='items-TOTAL_FORMS']"
-                  hx-target="#item-rows" hx-swap="beforeend">+ लाइन थप्नुहोस्</button>
+                  hx-target="#item-rows" hx-swap="beforeend">{% translate '+ Add line' %}</button>
         </div>
         {{ formset.management_form }}
         {% if formset.non_form_errors %}<div class="alert alert-error mb-2">{{ formset.non_form_errors }}</div>{% endif %}
@@ -158,12 +158,12 @@
             <thead>
               <tr>
                 <th class="w-8">#</th>
-                <th class="min-w-56">कागजमा लेखिएको</th>
-                <th class="min-w-48">क्याटलग सामान</th>
-                <th class="w-28 text-right">परिमाण</th>
-                <th class="w-32">इकाई</th>
-                <th class="w-28 text-right">दर</th>
-                <th class="w-10">हटाउने</th>
+                <th class="min-w-56">{% translate 'As written on paper' %}</th>
+                <th class="min-w-48">{% translate 'Catalog item' %}</th>
+                <th class="w-28 text-right">{% translate 'Qty' %}</th>
+                <th class="w-32">{% translate 'Unit' %}</th>
+                <th class="w-28 text-right">{% translate 'Rate' %}</th>
+                <th class="w-10">{% translate 'Remove?' %}</th>
               </tr>
             </thead>
             <tbody id="item-rows">
@@ -176,23 +176,23 @@
 
         <div class="flex flex-wrap items-end justify-between gap-3 mt-3 pt-3 border-t border-base-300">
           <p class="text-sm opacity-70 max-w-md">
-            {% if chalani.total_amount %}अक्षरुपी: {{ chalani.total_amount|in_words_np }}{% endif %}
+            {% if chalani.total_amount %}{% translate 'In words:' %} {{ chalani.total_amount|in_words }}{% endif %}
           </p>
-          <p class="text-lg font-semibold">जम्मा: रू. {{ chalani.total_amount|nprs }}</p>
+          <p class="text-lg font-semibold">{% translate 'Total: Rs.' %} {{ chalani.total_amount|money }}</p>
         </div>
       </div>
     </div>
 
     <div class="flex justify-end gap-2">
-      <a href="{% url 'chalani:register' %}" class="btn btn-ghost">फिर्ता</a>
-      <button type="submit" class="btn btn-primary" {% if chalani.status == "billed" %}disabled{% endif %}>सुरक्षित गर्नुहोस्</button>
+      <a href="{% url 'chalani:register' %}" class="btn btn-ghost">{% translate 'Back' %}</a>
+      <button type="submit" class="btn btn-primary" {% if chalani.status == "billed" %}disabled{% endif %}>{% translate 'Save' %}</button>
     </div>
   </form>
 </div>
 
 {% partialdef item_row %}
 <tr>
-  <td class="opacity-40 text-xs">{{ forloop.counter|default:new_total|nepnum }}</td>
+  <td class="opacity-40 text-xs">{% firstof forloop.counter new_total as row_no %}{{ row_no|num }}</td>
   <td>
     {{ form.id }}
     {{ form.description }}
@@ -201,7 +201,7 @@
   <td>
     {{ form.item }}
     {% if not form.instance.item_id and form.instance.pk %}
-      <span class="text-xs text-warning">जोडिएको छैन</span>
+      <span class="text-xs text-warning">{% translate 'Not linked' %}</span>
     {% endif %}
   </td>
   <td>{{ form.qty }}{% if form.qty.errors %}<span class="text-error text-xs">{{ form.qty.errors.0 }}</span>{% endif %}</td>

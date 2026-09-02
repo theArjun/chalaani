@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% block title %}फर्म सेटिङ{% endblock %}
+{% load i18n %}
+{% block title %}{% translate 'Firm settings' %}{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">फर्म सेटिङ</h1>
+<h1 class="text-2xl font-bold mb-4">{% translate 'Firm settings' %}</h1>
 
 <div class="grid gap-4 lg:grid-cols-2">
   <form method="post" class="card bg-base-100 border border-base-300">
     {% csrf_token %}
     <div class="card-body grid gap-3 sm:grid-cols-2">
-      <h2 class="font-semibold sm:col-span-2">फर्मको विवरण</h2>
+      <h2 class="font-semibold sm:col-span-2">{% translate 'Firm details' %}</h2>
       {% for field in form %}
         <label class="form-control {% if field.name == 'address' %}sm:col-span-2{% endif %}">
           <span class="label-text text-xs mb-1">{{ field.label }}</span>
@@ -16,16 +17,16 @@
         </label>
       {% endfor %}
       {% if is_owner %}
-        <div class="sm:col-span-2 flex justify-end"><button class="btn btn-primary btn-sm">सुरक्षित गर्नुहोस्</button></div>
+        <div class="sm:col-span-2 flex justify-end"><button class="btn btn-primary btn-sm">{% translate 'Save' %}</button></div>
       {% else %}
-        <p class="sm:col-span-2 text-xs opacity-60">सम्पादन मालिकले मात्र गर्न सक्नुहुन्छ.</p>
+        <p class="sm:col-span-2 text-xs opacity-60">{% translate 'Only the owner can edit this.' %}</p>
       {% endif %}
     </div>
   </form>
 
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body">
-      <h2 class="font-semibold">सदस्यहरू</h2>
+      <h2 class="font-semibold">{% translate 'Members' %}</h2>
       <table class="table table-sm">
         <tbody>
         {% for member in members %}
@@ -38,7 +39,7 @@
             <td class="text-right">
               {% if is_owner and member.user != user %}
                 <form method="post" action="{% url 'orgs:remove_member' member.pk %}">{% csrf_token %}
-                  <button class="btn btn-ghost btn-xs text-error">हटाउनुहोस्</button>
+                  <button class="btn btn-ghost btn-xs text-error">{% translate 'Remove' %}</button>
                 </form>
               {% endif %}
             </td>
@@ -58,7 +59,7 @@
             <span class="label-text text-xs mb-1">{{ member_form.role.label }}</span>
             {{ member_form.role }}
           </label>
-          <button name="add_member" value="1" class="btn btn-outline btn-sm">थप्नुहोस्</button>
+          <button name="add_member" value="1" class="btn btn-outline btn-sm">{% translate 'Add' %}</button>
           {% if member_form.username.errors %}<span class="text-error text-xs sm:col-span-3">{{ member_form.username.errors.0 }}</span>{% endif %}
         </form>
       {% endif %}

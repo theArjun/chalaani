@@ -1,0 +1,961 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-02 22:50+0545\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ne\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/admin.py:12 templates/accounts/login.html:8 templates/base.html:6
+#: templates/base.html:62 templates/base.html:131
+#: templates/chalani/detail.html:3 templates/chalani/report.html:26
+#: templates/chalani/vendor_list.html:19
+msgid "Chalani"
+msgstr "चलानी"
+
+#: accounts/forms.py:21
+msgid "Your name"
+msgstr "तपाईंको नाम"
+
+#: accounts/forms.py:24 chalani/models.py:44
+#: templates/chalani/vendor_list.html:19
+msgid "Phone"
+msgstr "फोन"
+
+#: accounts/forms.py:27
+msgid "Firm name (English)"
+msgstr "फर्मको नाम (English)"
+
+#: accounts/forms.py:32 orgs/models.py:15
+msgid "Firm name (Nepali)"
+msgstr "फर्मको नाम (नेपाली)"
+
+#: accounts/models.py:9
+msgid "Full name"
+msgstr "पूरा नाम"
+
+#: accounts/views.py:28
+msgid "Welcome! Now upload a photo of your first chalani."
+msgstr "स्वागत छ! अब पहिलो चलानीको फोटो अपलोड गर्नुहोस्."
+
+#: chalani/forms.py:36
+msgid "Photo of the chalani"
+msgstr "चलानीको फोटो"
+
+#: chalani/forms.py:37
+msgid "Photograph the slip — AI reads it into a draft."
+msgstr "कागजको फोटो खिच्नुहोस् — AI ले पढेर मस्यौदा बनाउँछ."
+
+#: chalani/forms.py:43
+msgid "Read it with AI"
+msgstr "AI ले पढोस्"
+
+#: chalani/forms.py:69
+msgid "— choose a supplier —"
+msgstr "— आपूर्तिकर्ता छान्नुहोस् —"
+
+#: chalani/forms.py:90
+msgid "exactly as the paper says"
+msgstr "कागजमा जस्तो लेखिएको छ"
+
+#: chalani/forms.py:97
+msgid "— link to the catalog —"
+msgstr "— क्याटलगमा जोड्नुहोस् —"
+
+#: chalani/forms.py:133 orgs/forms.py:19
+msgid "Kathmandu"
+msgstr "काठमाडौँ"
+
+#: chalani/models.py:42
+msgid "Supplier name (Nepali)"
+msgstr "आपूर्तिकर्ताको नाम"
+
+#: chalani/models.py:45 orgs/models.py:19 templates/chalani/vendor_list.html:19
+msgid "Address"
+msgstr "ठेगाना"
+
+#: chalani/models.py:46 orgs/models.py:20
+msgid "District"
+msgstr "जिल्ला"
+
+#: chalani/models.py:68
+msgid "Item name (Nepali)"
+msgstr "सामानको नाम"
+
+#: chalani/models.py:69 chalani/models.py:241 templates/chalani/detail.html:164
+#: templates/chalani/item_list.html:22 templates/chalani/report.html:58
+msgid "Unit"
+msgstr "इकाई"
+
+#: chalani/models.py:71 templates/chalani/item_list.html:22
+msgid "Default rate"
+msgstr "सामान्य दर"
+
+#: chalani/models.py:112
+msgid "Extracting"
+msgstr "प्रशोधन हुँदै"
+
+#: chalani/models.py:113 templates/chalani/dashboard.html:25
+msgid "Draft"
+msgstr "मस्यौदा"
+
+#: chalani/models.py:114 templates/chalani/report.html:26
+msgid "Verified"
+msgstr "प्रमाणित"
+
+#: chalani/models.py:115
+msgid "Billed"
+msgstr "बिल भयो"
+
+#: chalani/models.py:120 chalani/views.py:417
+#: templates/chalani/dashboard.html:45 templates/chalani/register.html:94
+msgid "Chalani no."
+msgstr "चलानी नं."
+
+#: chalani/models.py:121 chalani/views.py:417
+msgid "Date (AD)"
+msgstr "मिति (ई.सं.)"
+
+#: chalani/models.py:122 chalani/views.py:417 nepal/forms.py:44
+msgid "Date (BS)"
+msgstr "मिति (बि.सं.)"
+
+#: chalani/models.py:123 chalani/views.py:417
+msgid "Fiscal year"
+msgstr "आ.व."
+
+#: chalani/models.py:125 chalani/views.py:418
+#: templates/chalani/register.html:96
+msgid "Vehicle no."
+msgstr "गाडी नं."
+
+#: chalani/models.py:127
+msgid "Received by"
+msgstr "बुझिलिनेको नाम"
+
+#: chalani/models.py:128
+msgid "Remarks"
+msgstr "कैफियत"
+
+#: chalani/models.py:170
+msgid "unknown supplier"
+msgstr "अज्ञात आपूर्तिकर्ता"
+
+#: chalani/models.py:222
+msgid "no supplier chosen"
+msgstr "आपूर्तिकर्ता छानिएको छैन"
+
+#: chalani/models.py:224
+msgid "no chalani number"
+msgstr "चलानी नम्बर छैन"
+
+#: chalani/models.py:226
+msgid "no date"
+msgstr "मिति छैन"
+
+#: chalani/models.py:228
+msgid "no goods added"
+msgstr "कुनै सामान थपिएको छैन"
+
+#: chalani/models.py:230
+msgid "some lines are not linked to the catalog"
+msgstr "केही लाइन क्याटलगसँग जोडिएका छैनन्"
+
+#: chalani/models.py:239 templates/chalani/detail.html:161
+msgid "As written on paper"
+msgstr "कागजमा लेखिएको"
+
+#: chalani/models.py:240 templates/chalani/detail.html:163
+#: templates/chalani/report.html:58
+msgid "Qty"
+msgstr "परिमाण"
+
+#: chalani/models.py:242 templates/chalani/detail.html:165
+msgid "Rate"
+msgstr "दर"
+
+#: chalani/views.py:76
+#, python-format
+msgid "Could not read the date '%(value)s' — filter skipped."
+msgstr "'%(value)s' मिति बुझिएन — फिल्टर छोडियो."
+
+#: chalani/views.py:123
+msgid "Reading the photo — the draft will be ready in a moment."
+msgstr "फोटो पढ्दै छ — केही क्षणमा मस्यौदा तयार हुन्छ."
+
+#: chalani/views.py:141
+msgid "A billed chalani cannot be edited."
+msgstr "बिल भइसकेको चलानी सम्पादन गर्न मिल्दैन."
+
+#: chalani/views.py:161
+msgid "Saved."
+msgstr "सुरक्षित भयो."
+
+#: chalani/views.py:163
+msgid "Some fields need fixing — see below."
+msgstr "केही फिल्डमा त्रुटि छ — तल हेर्नुहोस्."
+
+#: chalani/views.py:220
+#, python-format
+msgid "Cannot verify yet: %(gaps)s"
+msgstr "प्रमाणित गर्न मिलेन: %(gaps)s"
+
+#: chalani/views.py:233
+#, python-format
+msgid "Chalani no. %(no)s is already verified for this supplier."
+msgstr "चलानी नं. %(no)s यही आपूर्तिकर्ताको लागि पहिले नै प्रमाणित छ."
+
+#: chalani/views.py:237
+msgid "Chalani verified ✓"
+msgstr "चलानी प्रमाणित भयो ✓"
+
+#: chalani/views.py:246
+msgid "Verify it first."
+msgstr "पहिले प्रमाणित गर्नुहोस्."
+
+#: chalani/views.py:250
+msgid "Marked as billed."
+msgstr "बिल भएको जनाइयो."
+
+#: chalani/views.py:262
+msgid "Sent back to draft."
+msgstr "मस्यौदामा फर्काइयो."
+
+#: chalani/views.py:271
+msgid "There is no photo."
+msgstr "फोटो छैन."
+
+#: chalani/views.py:273
+msgid ""
+"Remove the existing lines first — AI never overwrites what is filled in."
+msgstr "पहिले सबै लाइन हटाउनुहोस् — AI ले भरिएको मेट्दैन."
+
+#: chalani/views.py:276
+msgid "Reading it again…"
+msgstr "फेरि पढ्दै छ…"
+
+#: chalani/views.py:285
+msgid "A verified chalani cannot be deleted."
+msgstr "प्रमाणित चलानी मेट्न मिल्दैन."
+
+#: chalani/views.py:288
+msgid "Draft deleted."
+msgstr "मस्यौदा मेटियो."
+
+#: chalani/views.py:298
+msgid "There is no photo"
+msgstr "फोटो छैन"
+
+#: chalani/views.py:330
+#, python-format
+msgid "%(vendor)s saved."
+msgstr "%(vendor)s सुरक्षित भयो."
+
+#: chalani/views.py:360
+msgid "Item saved."
+msgstr "सामान सुरक्षित भयो."
+
+#: chalani/views.py:418
+msgid "Supplier"
+msgstr "आपूर्तिकर्ता"
+
+#: chalani/views.py:418 templates/chalani/item_list.html:22
+#: templates/chalani/register.html:97
+msgid "Lines"
+msgstr "लाइन"
+
+#: chalani/views.py:418 templates/chalani/dashboard.html:20
+#: templates/chalani/register.html:78
+msgid "Total amount"
+msgstr "जम्मा रकम"
+
+#: chalani/views.py:418 templates/chalani/dashboard.html:45
+#: templates/chalani/register.html:31 templates/chalani/register.html:99
+msgid "Status"
+msgstr "स्थिति"
+
+#: extraction/chain.py:26
+msgid "CHALAANI_EXTRACTION_ENABLED=0 — AI reading is switched off."
+msgstr "CHALAANI_EXTRACTION_ENABLED=0 — AI पढाइ बन्द छ."
+
+#: extraction/chain.py:29
+msgid ""
+"ANTHROPIC_API_KEY is not set — put it in .env; AI reading is disabled "
+"without it."
+msgstr "ANTHROPIC_API_KEY सेट भएको छैन — .env मा राख्नुहोस्."
+
+#: nepal/dates.py:58
+msgid "The date is empty"
+msgstr "मिति खाली छ"
+
+#: nepal/dates.py:65
+#, python-format
+msgid "Could not read the date '%(value)s' — use YYYY-MM-DD (e.g. 2082-05-17)"
+msgstr "'%(value)s' मिति बुझिएन — ढाँचा YYYY-MM-DD (जस्तै 2082-05-17)"
+
+#: nepal/dates.py:73
+#, python-format
+msgid "BS %(date)s does not exist (%(error)s)"
+msgstr "बि.सं. %(date)s अवस्थित छैन (%(error)s)"
+
+#: nepal/forms.py:45
+msgid "Format: YYYY-MM-DD"
+msgstr "ढाँचा: YYYY-MM-DD"
+
+#: nepal/templates/nepal/date_preview.html:7 templates/chalani/detail.html:17
+msgid "· AD"
+msgstr "· ई.सं."
+
+#: nepal/templates/nepal/date_preview.html:7 templates/base.html:120
+#: templates/chalani/detail.html:17
+msgid "· FY"
+msgstr "· आ.व."
+
+#: nepal/templatetags/nepal.py:136
+msgid "just now"
+msgstr "भर्खरै"
+
+#: nepal/templatetags/nepal.py:140
+#, python-format
+msgid "%(n)d minute"
+msgid_plural "%(n)d minutes"
+msgstr[0] "%(n)d मिनेट"
+msgstr[1] "%(n)d मिनेट"
+
+#: nepal/templatetags/nepal.py:143
+#, python-format
+msgid "%(n)d hour"
+msgid_plural "%(n)d hours"
+msgstr[0] "%(n)d घण्टा"
+msgstr[1] "%(n)d घण्टा"
+
+#: nepal/templatetags/nepal.py:145
+msgid "today"
+msgstr "आज"
+
+#: nepal/templatetags/nepal.py:148
+msgid "tomorrow"
+msgstr "भोलि"
+
+#: nepal/templatetags/nepal.py:148
+msgid "yesterday"
+msgstr "हिजो"
+
+#: nepal/templatetags/nepal.py:151
+#, python-format
+msgid "%(n)d day"
+msgid_plural "%(n)d days"
+msgstr[0] "%(n)d दिन"
+msgstr[1] "%(n)d दिन"
+
+#: nepal/templatetags/nepal.py:154
+#, python-format
+msgid "%(n)d month"
+msgid_plural "%(n)d months"
+msgstr[0] "%(n)d महिना"
+msgstr[1] "%(n)d महिना"
+
+#: nepal/templatetags/nepal.py:157
+#, python-format
+msgid "%(n)d year"
+msgid_plural "%(n)d years"
+msgstr[0] "%(n)d वर्ष"
+msgstr[1] "%(n)d वर्ष"
+
+#: nepal/templatetags/nepal.py:159
+#, python-format
+msgid "in %(time)s"
+msgstr "%(time)s पछि"
+
+#: nepal/templatetags/nepal.py:159
+#, python-format
+msgid "%(time)s ago"
+msgstr "%(time)s अघि"
+
+#: nepal/validators.py:25
+msgid "PAN/VAT number must be exactly 9 digits."
+msgstr "PAN/VAT नम्बर ९ अंकको हुनुपर्छ."
+
+#: nepal/validators.py:37
+msgid ""
+"That phone number does not look right — use a mobile (98########) or a "
+"landline (01-#######)."
+msgstr "फोन नम्बर मिलेन — मोबाइल (98########) वा ल्यान्डलाइन (01-#######) राख्नुहोस्."
+
+#: nepal/validators.py:63
+msgid "Unexpected characters in the vehicle number."
+msgstr "गाडी नम्बरमा नमिल्ने अक्षर छन्."
+
+#: orgs/forms.py:25
+msgid "Username"
+msgstr "प्रयोगकर्ता नाम"
+
+#: orgs/forms.py:28
+msgid "Role"
+msgstr "भूमिका"
+
+#: orgs/forms.py:40
+msgid "No such user."
+msgstr "यो प्रयोगकर्ता भेटिएन."
+
+#: orgs/mixins.py:32
+msgid "Only a manager or the owner can do this."
+msgstr "यो काम गर्न म्यानेजर वा मालिक हुनुपर्छ."
+
+#: orgs/models.py:42
+msgid "Owner"
+msgstr "मालिक"
+
+#: orgs/models.py:43
+msgid "Manager"
+msgstr "म्यानेजर"
+
+#: orgs/models.py:44
+msgid "Staff"
+msgstr "कर्मचारी"
+
+#: orgs/views.py:23
+#, python-format
+msgid "%(org)s registered."
+msgstr "%(org)s दर्ता भयो."
+
+#: orgs/views.py:37
+#, python-format
+msgid "Switched to %(org)s."
+msgstr "%(org)s मा स्विच भयो."
+
+#: orgs/views.py:63
+#, python-format
+msgid "%(user)s added."
+msgstr "%(user)s थपियो."
+
+#: orgs/views.py:65
+#, python-format
+msgid "%(user)s is already a member."
+msgstr "%(user)s पहिले नै सदस्य हुनुहुन्छ."
+
+#: orgs/views.py:74
+msgid "Firm details saved."
+msgstr "फर्मको विवरण सुरक्षित भयो."
+
+#: orgs/views.py:77
+msgid "Only the owner can change this."
+msgstr "यो परिवर्तन मालिकले मात्र गर्न सक्नुहुन्छ."
+
+#: orgs/views.py:96
+msgid "Only the owner can remove members."
+msgstr "मालिकले मात्र सदस्य हटाउन सक्नुहुन्छ."
+
+#: orgs/views.py:102
+msgid "You cannot remove yourself."
+msgstr "आफैंलाई हटाउन मिल्दैन."
+
+#: orgs/views.py:105
+msgid "Member removed."
+msgstr "सदस्य हटाइयो."
+
+#: templates/accounts/login.html:3 templates/accounts/login.html:22
+#: templates/accounts/signup.html:20
+msgid "Log in"
+msgstr "लगइन"
+
+#: templates/accounts/login.html:9
+msgid "Paper chalani, digital register"
+msgstr "कागजको चलानी, डिजिटल दर्ता"
+
+#: templates/accounts/login.html:23
+msgid "No account?"
+msgstr "खाता छैन?"
+
+#: templates/accounts/login.html:23 templates/accounts/signup.html:19
+#: templates/orgs/create.html:18
+msgid "Create account"
+msgstr "दर्ता गर्नुहोस्"
+
+#: templates/accounts/signup.html:3
+msgid "Sign up"
+msgstr "दर्ता"
+
+#: templates/accounts/signup.html:6
+msgid "Register the firm"
+msgstr "फर्म दर्ता गर्नुहोस्"
+
+#: templates/accounts/signup.html:7
+msgid "One form creates both your account and your firm."
+msgstr "एउटै फारमले तपाईंको खाता र फर्म दुवै बन्छ."
+
+#: templates/accounts/signup.html:20
+msgid "Already have an account?"
+msgstr "पहिले नै खाता छ?"
+
+#: templates/base.html:34
+msgid "Menu"
+msgstr "मेनु"
+
+#: templates/base.html:46
+msgid "Choose a firm"
+msgstr "फर्म छान्नुहोस्"
+
+#: templates/base.html:58
+msgid "+ Register a new firm"
+msgstr "+ नयाँ फर्म दर्ता"
+
+#: templates/base.html:69 templates/chalani/upload.html:3
+#: templates/chalani/upload.html:6
+msgid "New chalani"
+msgstr "नयाँ चलानी"
+
+#: templates/base.html:74 templates/base.html:79
+msgid "Language"
+msgstr "भाषा"
+
+#: templates/base.html:103 templates/base.html:143
+#: templates/orgs/settings.html:3 templates/orgs/settings.html:5
+msgid "Firm settings"
+msgstr "फर्म सेटिङ"
+
+#: templates/base.html:106
+msgid "Log out"
+msgstr "लगआउट"
+
+#: templates/base.html:120
+msgid "Today:"
+msgstr "आजको मिति:"
+
+#: templates/base.html:125
+msgid "Close"
+msgstr "बन्द गर्नुहोस्"
+
+#: templates/base.html:138 templates/chalani/dashboard.html:3
+msgid "Dashboard"
+msgstr "ड्यासबोर्ड"
+
+#: templates/base.html:139 templates/chalani/detail.html:9
+#: templates/chalani/register.html:3 templates/chalani/register.html:8
+msgid "Chalani register"
+msgstr "चलानी दर्ता"
+
+#: templates/base.html:140 templates/chalani/dashboard.html:45
+#: templates/chalani/register.html:40 templates/chalani/register.html:95
+#: templates/chalani/report.html:26 templates/chalani/vendor_list.html:3
+#: templates/chalani/vendor_list.html:6
+msgid "Suppliers"
+msgstr "आपूर्तिकर्ता"
+
+#: templates/base.html:141 templates/chalani/item_list.html:3
+#: templates/chalani/item_list.html:7
+msgid "Item catalog"
+msgstr "सामान क्याटलग"
+
+#: templates/base.html:142 templates/chalani/report.html:3
+msgid "Report"
+msgstr "रिपोर्ट"
+
+#: templates/chalani/dashboard.html:8 templates/chalani/register.html:9
+#: templates/chalani/register.html:49 templates/chalani/report.html:9
+#: templates/chalani/report.html:14
+msgid "FY"
+msgstr "आ.व."
+
+#: templates/chalani/dashboard.html:10 templates/chalani/register.html:13
+msgid "+ New chalani"
+msgstr "+ नयाँ चलानी"
+
+#: templates/chalani/dashboard.html:15
+msgid "Chalani this FY"
+msgstr "यस आ.व.का चलानी"
+
+#: templates/chalani/dashboard.html:17
+msgid "suppliers ·"
+msgstr "आपूर्तिकर्ता ·"
+
+#: templates/chalani/dashboard.html:17 templates/chalani/report.html:58
+msgid "Items"
+msgstr "सामान"
+
+#: templates/chalani/dashboard.html:21 templates/chalani/dashboard.html:74
+#: templates/chalani/item_list.html:31 templates/chalani/register.html:79
+msgid "Rs."
+msgstr "रू."
+
+#: templates/chalani/dashboard.html:22
+msgid "Sum of lines that carry a rate"
+msgstr "दर भरिएका लाइनहरूको जोड"
+
+#: templates/chalani/dashboard.html:27
+msgid "being read"
+msgstr "वटा पढ्दै"
+
+#: templates/chalani/dashboard.html:27 templates/chalani/register.html:82
+msgid "Awaiting verification"
+msgstr "प्रमाणित हुन बाँकी"
+
+#: templates/chalani/dashboard.html:30
+msgid "Verified / billed"
+msgstr "प्रमाणित / बिल"
+
+#: templates/chalani/dashboard.html:32
+msgid "View report"
+msgstr "रिपोर्ट हेर्नुहोस्"
+
+#: templates/chalani/dashboard.html:40
+msgid "Recent chalani"
+msgstr "पछिल्ला चलानी"
+
+#: templates/chalani/dashboard.html:41
+msgid "See all →"
+msgstr "सबै हेर्नुहोस् →"
+
+#: templates/chalani/dashboard.html:45 templates/chalani/register.html:93
+msgid "Date"
+msgstr "मिति"
+
+#: templates/chalani/dashboard.html:45
+msgid "Amount"
+msgstr "रकम"
+
+#: templates/chalani/dashboard.html:59
+msgid "Nothing here yet —"
+msgstr "अहिलेसम्म केही छैन —"
+
+#: templates/chalani/dashboard.html:59 templates/chalani/register.html:132
+msgid "Add the first chalani"
+msgstr "पहिलो चलानी थप्नुहोस्"
+
+#: templates/chalani/dashboard.html:69
+msgid "Top suppliers"
+msgstr "ठूला आपूर्तिकर्ता"
+
+#: templates/chalani/dashboard.html:77
+msgid "Appears once rates are filled in."
+msgstr "दर भरिएपछि यहाँ देखिन्छ."
+
+#: templates/chalani/detail.html:14
+msgid "Read by AI"
+msgstr "AI ले पढेको"
+
+#: templates/chalani/detail.html:24
+msgid "✓ Verify"
+msgstr "✓ प्रमाणित गर्नुहोस्"
+
+#: templates/chalani/detail.html:28
+msgid "Mark as billed"
+msgstr "बिल भयो भन्नुहोस्"
+
+#: templates/chalani/detail.html:31
+msgid "Send back to draft"
+msgstr "मस्यौदामा फर्काउनुहोस्"
+
+#: templates/chalani/detail.html:36
+msgid "Delete this draft?"
+msgstr "यो मस्यौदा मेट्ने?"
+
+#: templates/chalani/detail.html:37
+msgid "Delete"
+msgstr "मेट्नुहोस्"
+
+#: templates/chalani/detail.html:52
+msgid "AI is reading the photo…"
+msgstr "AI ले फोटो पढ्दै छ…"
+
+#: templates/chalani/detail.html:53
+msgid "The draft appears here in a few seconds. Keep this page open."
+msgstr "केही सेकेन्डमा मस्यौदा आफैँ देखिनेछ. यो पेज खुला राख्नुहोस्."
+
+#: templates/chalani/detail.html:59
+msgid "AI could not read it — please fill it in by hand."
+msgstr "AI ले पढ्न सकेन — हातैले भर्नुहोस्."
+
+#: templates/chalani/detail.html:63
+msgid "Try again"
+msgstr "फेरि प्रयास"
+
+#: templates/chalani/detail.html:73
+msgid "Still needed before verifying:"
+msgstr "प्रमाणित गर्न बाँकी:"
+
+#: templates/chalani/detail.html:83
+msgid "Photo of the slip"
+msgstr "कागजको फोटो"
+
+#: templates/chalani/detail.html:86
+msgid "Chalani photo"
+msgstr "चलानी फोटो"
+
+#: templates/chalani/detail.html:89
+msgid "Click the photo to see it full size."
+msgstr "पूरा आकारमा हेर्न फोटोमा क्लिक गर्नुहोस्."
+
+#: templates/chalani/detail.html:91
+msgid "No photo"
+msgstr "फोटो छैन"
+
+#: templates/chalani/detail.html:94
+msgid "Added:"
+msgstr "थपियो:"
+
+#: templates/chalani/detail.html:95
+msgid "Verified:"
+msgstr "प्रमाणित:"
+
+#: templates/chalani/detail.html:105
+msgid "Chalani details"
+msgstr "चलानीको विवरण"
+
+#: templates/chalani/detail.html:111
+msgid "+ Register a new supplier"
+msgstr "+ नयाँ आपूर्तिकर्ता दर्ता"
+
+#: templates/chalani/detail.html:123
+msgid "Today"
+msgstr "आज"
+
+#: templates/chalani/detail.html:147
+msgid "Goods"
+msgstr "सामानको विवरण"
+
+#: templates/chalani/detail.html:151
+msgid "+ Add line"
+msgstr "+ लाइन थप्नुहोस्"
+
+#: templates/chalani/detail.html:162
+msgid "Catalog item"
+msgstr "क्याटलग सामान"
+
+#: templates/chalani/detail.html:166
+msgid "Remove?"
+msgstr "हटाउने"
+
+#: templates/chalani/detail.html:179 templates/chalani/report.html:49
+msgid "In words:"
+msgstr "अक्षरुपी:"
+
+#: templates/chalani/detail.html:181
+msgid "Total: Rs."
+msgstr "जम्मा: रू."
+
+#: templates/chalani/detail.html:187
+msgid "Back"
+msgstr "फिर्ता"
+
+#: templates/chalani/detail.html:188 templates/chalani/item_form.html:19
+#: templates/chalani/vendor_form.html:19 templates/orgs/settings.html:20
+msgid "Save"
+msgstr "सुरक्षित गर्नुहोस्"
+
+#: templates/chalani/detail.html:204 templates/chalani/register.html:114
+msgid "Not linked"
+msgstr "जोडिएको छैन"
+
+#: templates/chalani/item_form.html:3 templates/chalani/item_form.html:6
+msgid "New item"
+msgstr "नयाँ सामान"
+
+#: templates/chalani/item_form.html:6
+msgid "Edit item"
+msgstr "सामान सम्पादन"
+
+#: templates/chalani/item_form.html:18 templates/chalani/upload.html:35
+#: templates/chalani/vendor_form.html:18
+msgid "Cancel"
+msgstr "रद्द"
+
+#: templates/chalani/item_list.html:8
+msgid "Verification links what the paper says to the items listed here."
+msgstr "प्रमाणित गर्दा कागजको लेखाइलाई यहीँका सामानसँग जोडिन्छ."
+
+#: templates/chalani/item_list.html:10
+msgid "+ New item"
+msgstr "+ नयाँ सामान"
+
+#: templates/chalani/item_list.html:13
+msgid "Search items…"
+msgstr "सामान खोज्नुहोस्…"
+
+#: templates/chalani/item_list.html:22 templates/chalani/vendor_list.html:19
+msgid "Name"
+msgstr "नाम"
+
+#: templates/chalani/item_list.html:33 templates/chalani/vendor_list.html:32
+msgid "Edit"
+msgstr "सम्पादन"
+
+#: templates/chalani/item_list.html:36
+msgid "The catalog is empty."
+msgstr "क्याटलग खाली छ."
+
+#: templates/chalani/register.html:9
+msgid "Delivery challan register"
+msgstr "डेलिभरी चलान दर्ता"
+
+#: templates/chalani/register.html:26
+msgid "Search"
+msgstr "खोज्नुहोस्"
+
+#: templates/chalani/register.html:28
+msgid "Chalani no., supplier, vehicle, item…"
+msgstr "चलानी नं., आपूर्तिकर्ता, गाडी, सामान…"
+
+#: templates/chalani/register.html:33 templates/chalani/register.html:42
+#: templates/chalani/register.html:51
+msgid "All"
+msgstr "सबै"
+
+#: templates/chalani/register.html:59
+msgid "From (BS)"
+msgstr "देखि (बि.सं.)"
+
+#: templates/chalani/register.html:63 templates/chalani/report.html:9
+msgid "To"
+msgstr "सम्म"
+
+#: templates/chalani/register.html:74
+msgid "Chalani count"
+msgstr "चलानी संख्या"
+
+#: templates/chalani/register.html:98 templates/chalani/report.html:26
+#: templates/chalani/report.html:58
+msgid "Amount (Rs.)"
+msgstr "रकम (रू.)"
+
+#: templates/chalani/register.html:109
+msgid "AD"
+msgstr "ई.सं."
+
+#: templates/chalani/register.html:130
+msgid "No chalani found"
+msgstr "कुनै चलानी भेटिएन"
+
+#: templates/chalani/register.html:131
+msgid "Photograph the slip — AI does the rest."
+msgstr "कागजको फोटो खिच्नुहोस् — बाँकी काम AI ले गर्छ."
+
+#: templates/chalani/report.html:7
+msgid "Supplier-wise report"
+msgstr "आपूर्तिकर्ता अनुसार रिपोर्ट"
+
+#: templates/chalani/report.html:9
+msgid "From"
+msgstr "देखि"
+
+#: templates/chalani/report.html:16
+msgid "Show"
+msgstr "हेर्नुहोस्"
+
+#: templates/chalani/report.html:23
+msgid "By supplier"
+msgstr "आपूर्तिकर्ता अनुसार"
+
+#: templates/chalani/report.html:36
+msgid "No chalani in this fiscal year."
+msgstr "यस आ.व.मा चलानी छैन."
+
+#: templates/chalani/report.html:42
+msgid "Total"
+msgstr "जम्मा"
+
+#: templates/chalani/report.html:55
+msgid "By item"
+msgstr "सामान अनुसार"
+
+#: templates/chalani/report.html:68
+msgid "No lines."
+msgstr "कुनै लाइन छैन."
+
+#: templates/chalani/upload.html:7
+msgid "Take or choose a photo of the slip — AI reads it into a draft."
+msgstr "कागजको फोटो खिच्नुहोस् वा छान्नुहोस् — AI ले पढेर मस्यौदा बनाइदिन्छ."
+
+#: templates/chalani/upload.html:23
+msgid "Switch it off for an empty draft you type in yourself."
+msgstr "बन्द गरे खाली मस्यौदा बन्छ, हातैले भर्नुहोस्."
+
+#: templates/chalani/upload.html:28
+msgid "For a good photo:"
+msgstr "राम्रो फोटोका लागि:"
+
+#: templates/chalani/upload.html:29
+msgid "· Lay the paper flat and shoot straight down"
+msgstr "· कागज समथर राखेर सिधा माथिबाट खिच्नुहोस्"
+
+#: templates/chalani/upload.html:30
+msgid "· Keep the chalani no., date and goods table in frame"
+msgstr "· चलानी नं., मिति र सामानको तालिका पूरै आओस्"
+
+#: templates/chalani/upload.html:31
+msgid "· Avoid shadows, shoot somewhere bright"
+msgstr "· छायाँ नपरोस्, उज्यालो ठाउँमा खिच्नुहोस्"
+
+#: templates/chalani/upload.html:36
+msgid "Upload"
+msgstr "अपलोड गर्नुहोस्"
+
+#: templates/chalani/vendor_form.html:3 templates/chalani/vendor_form.html:6
+msgid "New supplier"
+msgstr "नयाँ आपूर्तिकर्ता"
+
+#: templates/chalani/vendor_form.html:6
+msgid "Edit supplier"
+msgstr "आपूर्तिकर्ता सम्पादन"
+
+#: templates/chalani/vendor_list.html:7
+msgid "+ New supplier"
+msgstr "+ नयाँ आपूर्तिकर्ता"
+
+#: templates/chalani/vendor_list.html:10
+msgid "Search by name or PAN…"
+msgstr "नाम वा PAN ले खोज्नुहोस्…"
+
+#: templates/chalani/vendor_list.html:26
+msgid "Inactive"
+msgstr "निष्क्रिय"
+
+#: templates/chalani/vendor_list.html:35
+msgid "No suppliers yet."
+msgstr "कुनै आपूर्तिकर्ता छैन."
+
+#: templates/orgs/create.html:3
+msgid "New firm"
+msgstr "नयाँ फर्म"
+
+#: templates/orgs/create.html:6
+msgid "Register a firm"
+msgstr "फर्म दर्ता"
+
+#: templates/orgs/create.html:7
+msgid "Enter your firm details before registering chalani."
+msgstr "चलानी दर्ता गर्नुअघि फर्मको विवरण राख्नुहोस्."
+
+#: templates/orgs/settings.html:11
+msgid "Firm details"
+msgstr "फर्मको विवरण"
+
+#: templates/orgs/settings.html:22
+msgid "Only the owner can edit this."
+msgstr "सम्पादन मालिकले मात्र गर्न सक्नुहुन्छ."
+
+#: templates/orgs/settings.html:29
+msgid "Members"
+msgstr "सदस्यहरू"
+
+#: templates/orgs/settings.html:42
+msgid "Remove"
+msgstr "हटाउनुहोस्"
+
+#: templates/orgs/settings.html:62
+msgid "Add"
+msgstr "थप्नुहोस्"
+
+#~ msgid "Chalani register · FY"
+#~ msgstr "Chalani register · आ.व."

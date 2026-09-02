@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block title %}नयाँ चलानी{% endblock %}
+{% load i18n %}
+{% block title %}{% translate 'New chalani' %}{% endblock %}
 {% block content %}
 <div class="max-w-xl mx-auto">
-  <h1 class="text-2xl font-bold mb-1">नयाँ चलानी</h1>
-  <p class="text-sm opacity-60 mb-4">कागजको फोटो खिच्नुहोस् वा छान्नुहोस् — AI ले पढेर मस्यौदा बनाइदिन्छ.</p>
+  <h1 class="text-2xl font-bold mb-1">{% translate 'New chalani' %}</h1>
+  <p class="text-sm opacity-60 mb-4">{% translate 'Take or choose a photo of the slip — AI reads it into a draft.' %}</p>
 
   <form method="post" enctype="multipart/form-data" class="card bg-base-100 border border-base-300">
     {% csrf_token %}
@@ -19,20 +20,20 @@
         {{ form.use_ai }}
         <span>
           <span class="block">{{ form.use_ai.label }}</span>
-          <span class="block text-xs opacity-60">बन्द गरे खाली मस्यौदा बन्छ, हातैले भर्नुहोस्.</span>
+          <span class="block text-xs opacity-60">{% translate 'Switch it off for an empty draft you type in yourself.' %}</span>
         </span>
       </label>
 
       <div class="text-xs opacity-60 bg-base-200 rounded-lg p-3 space-y-1">
-        <p class="font-semibold">राम्रो फोटोका लागि:</p>
-        <p>· कागज समथर राखेर सिधा माथिबाट खिच्नुहोस्</p>
-        <p>· चलानी नं., मिति र सामानको तालिका पूरै आओस्</p>
-        <p>· छायाँ नपरोस्, उज्यालो ठाउँमा खिच्नुहोस्</p>
+        <p class="font-semibold">{% translate 'For a good photo:' %}</p>
+        <p>{% translate '· Lay the paper flat and shoot straight down' %}</p>
+        <p>{% translate '· Keep the chalani no., date and goods table in frame' %}</p>
+        <p>{% translate '· Avoid shadows, shoot somewhere bright' %}</p>
       </div>
 
       <div class="flex justify-end gap-2">
-        <a href="{% url 'chalani:register' %}" class="btn btn-ghost">रद्द</a>
-        <button type="submit" class="btn btn-primary">अपलोड गर्नुहोस्</button>
+        <a href="{% url 'chalani:register' %}" class="btn btn-ghost">{% translate 'Cancel' %}</a>
+        <button type="submit" class="btn btn-primary">{% translate 'Upload' %}</button>
       </div>
     </div>
   </form>
