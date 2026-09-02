@@ -1,0 +1,383 @@
+/* ---------------------------------------------------------------------------
+   chalaani — corporate theme
+   A daisyUI 5 theme defined in plain CSS so it works identically whether
+   Tailwind comes from the CDN or the standalone binary. Ledger-first: hairline
+   borders instead of shadows, squared corners, tabular figures, and a navy /
+   crimson palette that stays quiet next to a photographed paper slip.
+   --------------------------------------------------------------------------- */
+
+:root:has(input.theme-controller[value="chalaani"]:checked),
+[data-theme="chalaani"] {
+  color-scheme: light;
+
+  --color-base-100: oklch(100% 0 0);            /* cards, navbar, sidebar */
+  --color-base-200: oklch(97.6% 0.003 258);     /* page ground */
+  --color-base-300: oklch(92.4% 0.006 258);     /* hairlines, dividers */
+  --color-base-content: oklch(24% 0.018 258);   /* ink */
+
+  --color-primary: oklch(38% 0.078 258);        /* deep navy */
+  --color-primary-content: oklch(98% 0.004 258);
+  --color-secondary: oklch(52% 0.028 258);      /* slate */
+  --color-secondary-content: oklch(98% 0.004 258);
+  --color-accent: oklch(51% 0.175 20);          /* Nepali crimson, used sparingly */
+  --color-accent-content: oklch(98% 0.006 20);
+  --color-neutral: oklch(27% 0.018 258);
+  --color-neutral-content: oklch(97% 0.004 258);
+
+  --color-info: oklch(54% 0.105 236);
+  --color-info-content: oklch(98% 0.005 236);
+  --color-success: oklch(52% 0.105 152);
+  --color-success-content: oklch(98% 0.005 152);
+  --color-warning: oklch(70% 0.135 74);
+  --color-warning-content: oklch(24% 0.04 74);
+  --color-error: oklch(52% 0.19 25);
+  --color-error-content: oklch(98% 0.006 25);
+
+  --radius-selector: 0.25rem;   /* squared checkboxes, toggles, badges */
+  --radius-field: 0.25rem;      /* buttons, inputs, selects */
+  --radius-box: 0.5rem;         /* cards, modals, alerts */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;                   /* flat: structure comes from borders */
+  --noise: 0;
+
+  /* app-level tokens */
+  --line: color-mix(in oklch, var(--color-base-300) 92%, transparent);
+  --ink-muted: color-mix(in oklch, var(--color-base-content) 62%, transparent);
+  --ink-faint: color-mix(in oklch, var(--color-base-content) 45%, transparent);
+  --shadow-card: 0 1px 2px oklch(24% 0.018 258 / 0.04);
+  --shadow-pop: 0 8px 24px oklch(24% 0.018 258 / 0.10), 0 1px 2px oklch(24% 0.018 258 / 0.06);
+}
+
+/* Dark surfaces. `data-mode` is set before first paint by the inline script in
+   base.html — from the viewer's saved choice, else from prefers-color-scheme —
+   so the OS default still applies but a person can override it. */
+[data-theme="chalaani"][data-mode="dark"] {
+    color-scheme: dark;
+
+    --color-base-100: oklch(22.5% 0.013 258);
+    --color-base-200: oklch(18.5% 0.012 258);
+    --color-base-300: oklch(31% 0.016 258);
+    --color-base-content: oklch(92% 0.006 258);
+
+    --color-primary: oklch(72% 0.085 250);
+    --color-primary-content: oklch(18% 0.02 250);
+    --color-secondary: oklch(70% 0.03 258);
+    --color-secondary-content: oklch(18% 0.015 258);
+    --color-accent: oklch(66% 0.155 20);
+    --color-accent-content: oklch(18% 0.03 20);
+    --color-neutral: oklch(30% 0.016 258);
+    --color-neutral-content: oklch(94% 0.005 258);
+
+    --color-info: oklch(70% 0.105 236);
+    --color-info-content: oklch(18% 0.03 236);
+    --color-success: oklch(70% 0.11 152);
+    --color-success-content: oklch(18% 0.03 152);
+    --color-warning: oklch(78% 0.13 74);
+    --color-warning-content: oklch(20% 0.04 74);
+    --color-error: oklch(68% 0.16 25);
+    --color-error-content: oklch(18% 0.04 25);
+
+  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.35);
+  --shadow-pop: 0 10px 28px oklch(0% 0 0 / 0.45), 0 1px 2px oklch(0% 0 0 / 0.3);
+}
+
+/* --------------------------------------------------------------- typography */
+
+body {
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, .stat-value {
+  letter-spacing: -0.018em;
+}
+
+/* Figures line up in columns — money, quantities, PAN, dates, chalani numbers. */
+.tabular,
+.font-mono,
+.stat-value,
+td.text-right,
+th.text-right,
+input[inputmode="decimal"],
+input[inputmode="numeric"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+.font-mono {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  font-size: 0.9375em;
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------- chrome */
+
+.navbar {
+  background-color: color-mix(in oklch, var(--color-base-100) 88%, transparent);
+  backdrop-filter: saturate(1.6) blur(10px);
+  border-bottom: 1px solid var(--line);
+  min-height: 3.5rem;
+}
+
+.drawer-side aside {
+  border-right: 1px solid var(--line);
+}
+
+/* Sidebar: an accent rule marks the active page instead of a filled pill. */
+.drawer-side .menu li > a {
+  border-radius: var(--radius-field);
+  color: var(--ink-muted);
+  font-weight: 500;
+  padding-inline-start: 0.75rem;
+  border-inline-start: 2px solid transparent;
+}
+.drawer-side .menu li > a:hover {
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+}
+.drawer-side .menu li > a.active {
+  background-color: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-inline-start-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------- surfaces */
+
+.card {
+  box-shadow: var(--shadow-card);
+}
+.card,
+.stats {
+  border-color: var(--line) !important;
+}
+
+.dropdown-content {
+  box-shadow: var(--shadow-pop) !important;
+  border-color: var(--line) !important;
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.table thead th {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background-color: var(--color-base-100);
+  border-bottom: 1px solid var(--color-base-300);
+  padding-block: 0.6rem;
+  white-space: nowrap;
+}
+
+.table :where(tbody td) {
+  padding-block: 0.55rem;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid var(--line);
+}
+.table tbody tr:last-child {
+  border-bottom: 0;
+}
+.table tbody tr.hover:hover,
+.table tbody tr:hover {
+  background-color: color-mix(in oklch, var(--color-primary) 4%, transparent);
+}
+
+.table tfoot td {
+  border-top: 1px solid var(--color-base-300);
+  background-color: var(--color-base-200);
+  font-weight: 600;
+}
+
+/* A ledger reads better without stripes once it has hairlines. */
+.table-zebra tbody tr:nth-child(2n) td {
+  background-color: transparent;
+}
+
+/* ------------------------------------------------------------------ stats */
+
+.stats {
+  box-shadow: var(--shadow-card);
+}
+.stat-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.stat-value {
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+.stat-desc {
+  color: var(--ink-muted);
+}
+.stats > .stat + .stat {
+  border-inline-start: 1px solid var(--line);
+}
+
+/* ----------------------------------------------------------------- status */
+
+/* Tinted, bordered status chips — legible on paper and on screen, and never
+   as loud as a solid fill in a list of two hundred rows. (Not `.status`: that
+   name belongs to a daisyUI 5 component.) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.chip::before {
+  content: "";
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+.chip-extracting {
+  color: var(--color-warning);
+  background: color-mix(in oklch, var(--color-warning) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-warning) 32%, transparent);
+}
+.chip-draft {
+  color: var(--ink-muted);
+  background: var(--color-base-200);
+  border-color: var(--color-base-300);
+}
+.chip-verified {
+  color: var(--color-success);
+  background: color-mix(in oklch, var(--color-success) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-success) 32%, transparent);
+}
+.chip-billed {
+  color: var(--color-info);
+  background: color-mix(in oklch, var(--color-info) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-info) 32%, transparent);
+}
+.chip-ai {
+  color: var(--color-accent);
+  background: color-mix(in oklch, var(--color-accent) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-accent) 30%, transparent);
+}
+.chip-ai::before { display: none; }
+
+/* ---------------------------------------------------------------- controls */
+
+.btn {
+  font-weight: 500;
+  letter-spacing: -0.004em;
+  box-shadow: none;
+}
+.btn-primary {
+  box-shadow: inset 0 1px 0 color-mix(in oklch, white 12%, transparent);
+}
+.btn-outline,
+.btn-ghost {
+  border-color: var(--color-base-300);
+}
+.btn-ghost {
+  border-color: transparent;
+}
+
+.input,
+.select,
+.textarea,
+.file-input {
+  border-color: var(--color-base-300);
+  background-color: var(--color-base-100);
+}
+.input:focus,
+.input:focus-within,
+.select:focus,
+.textarea:focus,
+.file-input:focus {
+  border-color: var(--color-primary);
+  outline: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  outline-offset: 0;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--color-primary) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: var(--radius-field);
+}
+
+.label-text {
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.alert {
+  border-width: 1px;
+  border-style: solid;
+}
+.alert-info    { background: color-mix(in oklch, var(--color-info) 10%, var(--color-base-100)); border-color: color-mix(in oklch, var(--color-info) 28%, transparent); color: var(--color-base-content); }
+.alert-success { background: color-mix(in oklch, var(--color-success) 10%, var(--color-base-100)); border-color: color-mix(in oklch, var(--color-success) 28%, transparent); color: var(--color-base-content); }
+.alert-warning { background: color-mix(in oklch, var(--color-warning) 12%, var(--color-base-100)); border-color: color-mix(in oklch, var(--color-warning) 32%, transparent); color: var(--color-base-content); }
+.alert-error   { background: color-mix(in oklch, var(--color-error) 10%, var(--color-base-100)); border-color: color-mix(in oklch, var(--color-error) 28%, transparent); color: var(--color-base-content); }
+
+/* ------------------------------------------------------------------- print */
+
+@media print {
+  .drawer-side,
+  .navbar,
+  .footer,
+  .btn,
+  form.card,
+  .htmx-indicator {
+    display: none !important;
+  }
+  .drawer,
+  .drawer-content,
+  main {
+    display: block !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .card,
+  .stats {
+    border: 1px solid #d4d4d4 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+  .table thead th {
+    color: #000 !important;
+    border-bottom: 1px solid #000 !important;
+  }
+  a[href]::after {
+    content: "";
+  }
+}
+
+/* The light/dark control shows the mode it switches *to*. */
+.mode-dark-only { display: none; }
+[data-mode="dark"] .mode-dark-only { display: inline; }
+[data-mode="dark"] .mode-light-only { display: none; }

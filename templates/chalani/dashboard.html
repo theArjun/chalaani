@@ -53,7 +53,7 @@
               <td class="font-mono">{{ chalani.chalani_no|default:"—" }}</td>
               <td>{{ chalani.vendor|default:"—" }}</td>
               <td class="text-right tabular">{{ chalani.total|default_if_none:0|money }}</td>
-              <td><span class="badge {{ chalani.status|status_badge }} badge-sm">{{ chalani.get_status_display }}</span></td>
+              <td><span class="{{ chalani.status|status_badge }}">{{ chalani.get_status_display }}</span></td>
             </tr>
           {% empty %}
             <tr><td colspan="5" class="text-center py-10 opacity-60">{% translate 'Nothing here yet —' %} <a class="link" href="{% url 'chalani:upload' %}">{% translate 'Add the first chalani' %}</a>.</td></tr>

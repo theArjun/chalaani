@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-02 22:50+0545\n"
+"POT-Creation-Date: 2026-09-02 23:02+0545\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: accounts/admin.py:12 templates/accounts/login.html:8 templates/base.html:6
-#: templates/base.html:62 templates/base.html:131
+#: templates/base.html:82 templates/base.html:157
 #: templates/chalani/detail.html:3 templates/chalani/report.html:26
 #: templates/chalani/vendor_list.html:19
 msgid "Chalani"
@@ -266,7 +266,8 @@ msgstr "%(vendor)s सुरक्षित भयो."
 msgid "Item saved."
 msgstr "सामान सुरक्षित भयो."
 
-#: chalani/views.py:418
+#: chalani/views.py:418 templates/chalani/register.html:95
+#: templates/chalani/report.html:26
 msgid "Supplier"
 msgstr "आपूर्तिकर्ता"
 
@@ -317,68 +318,68 @@ msgstr "ढाँचा: YYYY-MM-DD"
 msgid "· AD"
 msgstr "· ई.सं."
 
-#: nepal/templates/nepal/date_preview.html:7 templates/base.html:120
+#: nepal/templates/nepal/date_preview.html:7 templates/base.html:146
 #: templates/chalani/detail.html:17
 msgid "· FY"
 msgstr "· आ.व."
 
-#: nepal/templatetags/nepal.py:136
+#: nepal/templatetags/nepal.py:132
 msgid "just now"
 msgstr "भर्खरै"
 
-#: nepal/templatetags/nepal.py:140
+#: nepal/templatetags/nepal.py:136
 #, python-format
 msgid "%(n)d minute"
 msgid_plural "%(n)d minutes"
 msgstr[0] "%(n)d मिनेट"
 msgstr[1] "%(n)d मिनेट"
 
-#: nepal/templatetags/nepal.py:143
+#: nepal/templatetags/nepal.py:139
 #, python-format
 msgid "%(n)d hour"
 msgid_plural "%(n)d hours"
 msgstr[0] "%(n)d घण्टा"
 msgstr[1] "%(n)d घण्टा"
 
-#: nepal/templatetags/nepal.py:145
+#: nepal/templatetags/nepal.py:141
 msgid "today"
 msgstr "आज"
 
-#: nepal/templatetags/nepal.py:148
+#: nepal/templatetags/nepal.py:144
 msgid "tomorrow"
 msgstr "भोलि"
 
-#: nepal/templatetags/nepal.py:148
+#: nepal/templatetags/nepal.py:144
 msgid "yesterday"
 msgstr "हिजो"
 
-#: nepal/templatetags/nepal.py:151
+#: nepal/templatetags/nepal.py:147
 #, python-format
 msgid "%(n)d day"
 msgid_plural "%(n)d days"
 msgstr[0] "%(n)d दिन"
 msgstr[1] "%(n)d दिन"
 
-#: nepal/templatetags/nepal.py:154
+#: nepal/templatetags/nepal.py:150
 #, python-format
 msgid "%(n)d month"
 msgid_plural "%(n)d months"
 msgstr[0] "%(n)d महिना"
 msgstr[1] "%(n)d महिना"
 
-#: nepal/templatetags/nepal.py:157
+#: nepal/templatetags/nepal.py:153
 #, python-format
 msgid "%(n)d year"
 msgid_plural "%(n)d years"
 msgstr[0] "%(n)d वर्ष"
 msgstr[1] "%(n)d वर्ष"
 
-#: nepal/templatetags/nepal.py:159
+#: nepal/templatetags/nepal.py:155
 #, python-format
 msgid "in %(time)s"
 msgstr "%(time)s पछि"
 
-#: nepal/templatetags/nepal.py:159
+#: nepal/templatetags/nepal.py:155
 #, python-format
 msgid "%(time)s ago"
 msgstr "%(time)s अघि"
@@ -499,66 +500,69 @@ msgstr "एउटै फारमले तपाईंको खाता र �
 msgid "Already have an account?"
 msgstr "पहिले नै खाता छ?"
 
-#: templates/base.html:34
+#: templates/base.html:54
 msgid "Menu"
 msgstr "मेनु"
 
-#: templates/base.html:46
+#: templates/base.html:66
 msgid "Choose a firm"
 msgstr "फर्म छान्नुहोस्"
 
-#: templates/base.html:58
+#: templates/base.html:78
 msgid "+ Register a new firm"
 msgstr "+ नयाँ फर्म दर्ता"
 
-#: templates/base.html:69 templates/chalani/upload.html:3
+#: templates/base.html:89 templates/chalani/upload.html:3
 #: templates/chalani/upload.html:6
 msgid "New chalani"
 msgstr "नयाँ चलानी"
 
-#: templates/base.html:74 templates/base.html:79
+#: templates/base.html:94
+msgid "Light / dark"
+msgstr "उज्यालो / अँध्यारो"
+
+#: templates/base.html:100 templates/base.html:105
 msgid "Language"
 msgstr "भाषा"
 
-#: templates/base.html:103 templates/base.html:143
+#: templates/base.html:129 templates/base.html:169
 #: templates/orgs/settings.html:3 templates/orgs/settings.html:5
 msgid "Firm settings"
 msgstr "फर्म सेटिङ"
 
-#: templates/base.html:106
+#: templates/base.html:132
 msgid "Log out"
 msgstr "लगआउट"
 
-#: templates/base.html:120
+#: templates/base.html:146
 msgid "Today:"
 msgstr "आजको मिति:"
 
-#: templates/base.html:125
+#: templates/base.html:151
 msgid "Close"
 msgstr "बन्द गर्नुहोस्"
 
-#: templates/base.html:138 templates/chalani/dashboard.html:3
+#: templates/base.html:164 templates/chalani/dashboard.html:3
 msgid "Dashboard"
 msgstr "ड्यासबोर्ड"
 
-#: templates/base.html:139 templates/chalani/detail.html:9
+#: templates/base.html:165 templates/chalani/detail.html:9
 #: templates/chalani/register.html:3 templates/chalani/register.html:8
 msgid "Chalani register"
 msgstr "चलानी दर्ता"
 
-#: templates/base.html:140 templates/chalani/dashboard.html:45
-#: templates/chalani/register.html:40 templates/chalani/register.html:95
-#: templates/chalani/report.html:26 templates/chalani/vendor_list.html:3
+#: templates/base.html:166 templates/chalani/dashboard.html:45
+#: templates/chalani/register.html:40 templates/chalani/vendor_list.html:3
 #: templates/chalani/vendor_list.html:6
 msgid "Suppliers"
 msgstr "आपूर्तिकर्ता"
 
-#: templates/base.html:141 templates/chalani/item_list.html:3
+#: templates/base.html:167 templates/chalani/item_list.html:3
 #: templates/chalani/item_list.html:7
 msgid "Item catalog"
 msgstr "सामान क्याटलग"
 
-#: templates/base.html:142 templates/chalani/report.html:3
+#: templates/base.html:168 templates/chalani/report.html:3
 msgid "Report"
 msgstr "रिपोर्ट"
 

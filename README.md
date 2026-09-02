@@ -15,11 +15,12 @@ Shrawan–Ashad fiscal years.
 | --- | --- |
 | Web | Django 6.1, one template per screen |
 | Interactivity | HTMX 2 + Django's native `{% partialdef %}` (no build step, no SPA) |
-| Styling | Tailwind 4 + daisyUI 5 (CDN while prototyping, standalone binary for prod) |
+| Styling | Tailwind 4 + daisyUI 5, custom `chalaani` theme (CDN while prototyping, standalone binary for prod) |
 | Extraction | LangChain `ChatAnthropic(...).with_structured_output(ChalaniExtraction)` |
 | Jobs | Django-Q2 on the ORM broker (no Redis) |
 | Storage | SQLite + a `MEDIA_ROOT` outside the repo, served only through an org-checked view |
 | Dates | `nepali-datetime`, wrapped in `nepal/dates.py` |
+| Agents | An MCP server named `chalaani` (`manage.py mcp`) |
 | Language | Django i18n — नेपाली (default) and English, switched from the navbar |
 
 ## Run it
@@ -68,6 +69,50 @@ photo upload ──▶ extracting ──▶ draft ──▶ verified ──▶ b
   save and several numberless drafts can coexist.
 * Extraction failures always land on an editable draft with the error shown,
   never a 500.
+
+## MCP server
+
+The register is also exposed over the Model Context Protocol, so an assistant can
+answer "what did Himal Cement deliver this fiscal year?" without a scraper. The
+server is named **`chalaani`**:
+
+```bash
+uv run python manage.py mcp --list-orgs           # which firms can be served
+uv run python manage.py mcp --org demo-nirman-sewa
+uv run python manage.py mcp --org demo-nirman-sewa --allow-writes
+uv run python manage.py mcp --org demo-nirman-sewa --transport streamable-http --port 8931
+```
+
+Client config (stdio):
+
+```json
+{
+  "mcpServers": {
+    "chalaani": {
+      "command": "uv",
+      "args": ["run", "python", "manage.py", "mcp", "--org", "demo-nirman-sewa"],
+      "cwd": "/path/to/chalaani"
+    }
+  }
+}
+```
+
+| Tool | |
+| --- | --- |
+| `list_chalani` | filter by status, vendor, fiscal year, BS date range, free text |
+| `get_chalani` | one chalani with its goods lines and what blocks verification |
+| `search_vendors` / `search_items` | catalog lookup, either script or PAN |
+| `vendor_report` | vendor-wise and item-wise totals for a fiscal year |
+| `register_summary` | current-FY counts and totals |
+| `pending_verification` | drafts still waiting, each with its reason |
+| `convert_date` | BS ↔ AD, plus weekday and fiscal year |
+| `update_chalani`, `link_line_item`, `verify_chalani` | **only with `--allow-writes`** |
+
+Two rules hold the tenancy boundary: the organization is pinned once at startup
+(`--org`) and bound into every tool, so it never appears in a tool schema and a
+caller cannot ask for another firm's data; and the tools that change data are not
+registered at all unless the operator passes `--allow-writes`. Dates cross the
+boundary as Bikram Sambat — `date_bs` alongside the Gregorian `date_ad`.
 
 ## Language: नेपाली / English
 
@@ -144,6 +189,19 @@ ChatAnthropic(model="claude-opus-5", ...).with_structured_output(
 Every field is optional on purpose: a `null` a clerk fills in beats a confident
 guess that silently enters the books.
 
+## Theme
+
+`static/css/theme.css` defines a daisyUI 5 theme called `chalaani` in plain CSS,
+so the CDN path and the built path render identically. It reads as a ledger
+rather than a dashboard: hairline borders instead of drop shadows, squared
+corners, deep navy primary with Nepali crimson kept for accents only, uppercase
+micro-labels on table headers, tabular figures everywhere a number can line up
+in a column, and tinted status chips that stay quiet across two hundred rows.
+Light and dark are both designed (not auto-inverted); the navbar control writes
+the choice to `localStorage`, and an inline script in `<head>` applies it before
+first paint so there is no flash. There is a print stylesheet too — a register
+or a report prints as a clean black-on-white table.
+
 ## Production notes
 
 * Tailwind without Node — download the standalone binary, then
@@ -163,5 +221,6 @@ uv run python manage.py test
 Covers BS/AD conversion and fiscal-year edges, lakh/crore formatting, unit
 folding, tenancy isolation (including photo access), the partial-unique
 constraint, extraction application and its failure path, the HTMX fragments, the
-verify/role rules, and localisation — including the rule that an English UI still
-renders Bikram Sambat dates.
+verify/role rules, localisation — including the rule that an English UI still
+renders Bikram Sambat dates — and the MCP surface (org scoping, write gating,
+and that `organization` never reaches a tool schema).

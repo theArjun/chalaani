@@ -12,6 +12,7 @@ dependencies = [
     "django-htmx>=1.29.0",
     "django-q2>=1.11.1",
     "langchain-anthropic>=1.7.0",
+    "mcp>=2.1.1",
     "nepali-datetime>=1.0.8.5",
     "pillow>=12.3.0",
     "pydantic>=2.13.5",

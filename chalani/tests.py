@@ -390,3 +390,103 @@ class LanguageSwitchTests(TestCase):
             reverse("chalani:register"), headers={"accept-language": "en"}
         )
         self.assertRegex(response.content.decode(), r"\d+ (day|month|year)s? ago")
+
+
+class McpServerTests(TestCase):
+    """The MCP surface obeys the same org scoping and write gating as the web app."""
+
+    def setUp(self):
+        from chalani import mcp_server
+
+        self.mcp = mcp_server
+        self.org_a, self.user_a = make_org("A", "clerk_a")
+        self.org_b, self.user_b = make_org("B", "clerk_b")
+        self.vendor = Vendor.objects.create(
+            organization=self.org_a, name="Himal Cement", name_np="हिमाल सिमेन्ट उद्योग"
+        )
+        self.item = Item.objects.create(organization=self.org_a, name="Cement", unit="bag")
+        self.chalani = Chalani.objects.create(
+            organization=self.org_a, created_by=self.user_a, vendor=self.vendor,
+            chalani_no="C/1204", date_bs="2082-05-17",
+        )
+        self.line = ChalaniItem.objects.create(
+            chalani=self.chalani, description="सिमेन्ट", qty=10, unit="bag", rate=870
+        )
+        Chalani.objects.create(
+            organization=self.org_b, created_by=self.user_b, chalani_no="OTHER/1"
+        )
+
+    def test_listing_never_crosses_organizations(self):
+        rows = self.mcp.list_chalani(self.org_a)["chalani"]
+        self.assertEqual([r["chalani_no"] for r in rows], ["C/1204"])
+        self.assertEqual(self.mcp.list_chalani(self.org_b)["count"], 1)
+
+    def test_get_chalani_is_scoped(self):
+        detail = self.mcp.get_chalani(self.org_a, self.chalani.pk)
+        self.assertEqual(detail["vendor"], "हिमाल सिमेन्ट उद्योग")
+        self.assertEqual(detail["items"][0]["amount"], 8700.0)
+        self.assertIn("क्याटलग", " ".join(detail["blocks_verification"]))
+        with self.assertRaises(Chalani.DoesNotExist):
+            self.mcp.get_chalani(self.org_b, self.chalani.pk)
+
+    def test_bs_dates_are_reported_both_ways(self):
+        row = self.mcp.list_chalani(self.org_a)["chalani"][0]
+        self.assertEqual(row["date_bs"], "2082-05-17")
+        self.assertEqual(row["date_ad"], "2025-09-02")
+        self.assertEqual(row["fiscal_year"], "2082/83")
+
+    def test_convert_date_both_directions(self):
+        self.assertEqual(self.mcp.convert_date(bs="2082-05-17")["ad"], "2025-09-02")
+        self.assertEqual(self.mcp.convert_date(ad="2025-09-02")["bs"], "2082-05-17")
+        with self.assertRaises(ValueError):
+            self.mcp.convert_date()
+
+    def test_filtering_by_fiscal_year_and_bs_range(self):
+        self.assertEqual(self.mcp.list_chalani(self.org_a, fiscal_year="2082/83")["count"], 1)
+        self.assertEqual(self.mcp.list_chalani(self.org_a, fiscal_year="2081/82")["count"], 0)
+        self.assertEqual(
+            self.mcp.list_chalani(self.org_a, date_from_bs="2082-06-01")["count"], 0
+        )
+
+    def test_write_tools_are_absent_unless_enabled(self):
+        import asyncio
+
+        read_only = asyncio.run(self.mcp.build_server(self.org_a).list_tools())
+        writable = asyncio.run(
+            self.mcp.build_server(self.org_a, allow_writes=True).list_tools()
+        )
+        self.assertNotIn("verify_chalani", [t.name for t in read_only])
+        self.assertIn("verify_chalani", [t.name for t in writable])
+        # `organization` is bound at startup, never exposed as a tool argument.
+        for tool in writable:
+            self.assertNotIn("organization", tool.input_schema.get("properties", {}))
+
+    def test_server_is_named_chalaani(self):
+        self.assertEqual(self.mcp.build_server(self.org_a).name, "chalaani")
+
+    def test_verify_refuses_while_something_is_missing(self):
+        result = self.mcp.verify_chalani(self.org_a, self.chalani.pk)
+        self.assertFalse(result["verified"])
+        self.chalani.refresh_from_db()
+        self.assertEqual(self.chalani.status, Chalani.Status.DRAFT)
+
+    def test_link_then_verify(self):
+        self.mcp.link_line_item(self.org_a, self.line.pk, self.item.pk)
+        result = self.mcp.verify_chalani(self.org_a, self.chalani.pk)
+        self.assertTrue(result["verified"])
+        self.chalani.refresh_from_db()
+        self.assertEqual(self.chalani.status, Chalani.Status.VERIFIED)
+
+    def test_update_keeps_omitted_fields_and_rejects_a_bad_date(self):
+        self.mcp.update_chalani(self.org_a, self.chalani.pk, vehicle_no="बा १२ ख ३४५६")
+        self.chalani.refresh_from_db()
+        self.assertEqual(self.chalani.chalani_no, "C/1204")  # untouched
+        self.assertEqual(self.chalani.vehicle_no, "बा १२ ख ३४५६")
+        with self.assertRaises(Exception):
+            self.mcp.update_chalani(self.org_a, self.chalani.pk, date_bs="2082-13-45")
+
+    def test_report_totals_match_the_lines(self):
+        report = self.mcp.vendor_report(self.org_a, fiscal_year="2082/83")
+        self.assertEqual(report["by_vendor"][0]["amount"], 8700.0)
+        # Ashad 2083 runs to 32 days — the fiscal year ends on the last of it.
+        self.assertEqual(report["period_bs"], ["2082-04-01", "2083-03-32"])

@@ -101,13 +101,9 @@ def current_fiscal_year():
 
 @register.filter(name="status_badge")
 def status_badge(status):
-    """daisyUI badge class for a chalani status."""
-    return {
-        "extracting": "badge-warning",
-        "draft": "badge-ghost",
-        "verified": "badge-success",
-        "billed": "badge-info",
-    }.get(status, "badge-ghost")
+    """Theme classes for a chalani status chip (see static/css/theme.css)."""
+    known = {"extracting", "draft", "verified", "billed"}
+    return f"chip chip-{status}" if status in known else "chip chip-draft"
 
 
 @register.filter(name="ago")

@@ -22,8 +22,8 @@
     <div class="card-body p-4">
       <h2 class="font-semibold mb-2">{% translate 'By supplier' %}</h2>
       <div class="overflow-x-auto">
-        <table class="table table-sm table-zebra">
-          <thead><tr><th>{% translate 'Suppliers' %}</th><th class="text-right">{% translate 'Chalani' %}</th><th class="text-right">{% translate 'Verified' %}</th><th class="text-right">{% translate 'Amount (Rs.)' %}</th></tr></thead>
+        <table class="table table-sm">
+          <thead><tr><th>{% translate 'Supplier' %}</th><th class="text-right">{% translate 'Chalani' %}</th><th class="text-right">{% translate 'Verified' %}</th><th class="text-right">{% translate 'Amount (Rs.)' %}</th></tr></thead>
           <tbody>
             {% for row in rows %}
               <tr>
@@ -54,7 +54,7 @@
     <div class="card-body p-4">
       <h2 class="font-semibold mb-2">{% translate 'By item' %}</h2>
       <div class="overflow-x-auto">
-        <table class="table table-sm table-zebra">
+        <table class="table table-sm">
           <thead><tr><th>{% translate 'Items' %}</th><th class="text-right">{% translate 'Qty' %}</th><th>{% translate 'Unit' %}</th><th class="text-right">{% translate 'Amount (Rs.)' %}</th></tr></thead>
           <tbody>
             {% for row in item_rows %}

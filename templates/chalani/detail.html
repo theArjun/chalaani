@@ -10,8 +10,8 @@
     </div>
     <h1 class="text-2xl font-bold flex items-center gap-2">
       {{ chalani.chalani_no|default:"{% translate 'No chalani no.' %}" }}
-      <span class="badge {{ chalani.status|status_badge }}">{{ chalani.get_status_display }}</span>
-      {% if chalani.extracted_by_ai %}<span class="badge badge-outline badge-sm">{% translate 'Read by AI' %}</span>{% endif %}
+      <span class="{{ chalani.status|status_badge }}">{{ chalani.get_status_display }}</span>
+      {% if chalani.extracted_by_ai %}<span class="chip chip-ai">{% translate 'Read by AI' %}</span>{% endif %}
     </h1>
     <p class="text-sm opacity-60">
       {% if chalani.date %}{{ chalani.date|bs_date_long }} {% translate '· AD' %} {{ chalani.date|date:"Y-m-d" }} {% translate '· FY' %} {{ chalani.fiscal_year|num }} · <span class="opacity-70">{{ chalani.date|ago }}</span>{% endif %}

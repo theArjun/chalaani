@@ -87,12 +87,12 @@
 
   <div class="card bg-base-100 border border-base-300 overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="table table-zebra table-pin-rows">
+      <table class="table table-pin-rows">
         <thead>
           <tr>
             <th>{% translate 'Date' %}</th>
             <th>{% translate 'Chalani no.' %}</th>
-            <th>{% translate 'Suppliers' %}</th>
+            <th>{% translate 'Supplier' %}</th>
             <th>{% translate 'Vehicle no.' %}</th>
             <th class="text-right">{% translate 'Lines' %}</th>
             <th class="text-right">{% translate 'Amount (Rs.)' %}</th>
@@ -117,11 +117,11 @@
             <td class="text-right tabular">{{ chalani.line_count|num }}</td>
             <td class="text-right tabular font-medium">{{ chalani.total|default_if_none:0|money }}</td>
             <td>
-              <span class="badge {{ chalani.status|status_badge }} badge-sm whitespace-nowrap">
+              <span class="{{ chalani.status|status_badge }}">
                 {% if chalani.status == "extracting" %}<span class="loading loading-spinner loading-xs mr-1"></span>{% endif %}
                 {{ chalani.get_status_display }}
               </span>
-              {% if chalani.extracted_by_ai %}<span class="badge badge-outline badge-xs ml-1">AI</span>{% endif %}
+              {% if chalani.extracted_by_ai %}<span class="chip chip-ai ml-1">AI</span>{% endif %}
             </td>
           </tr>
         {% empty %}

@@ -1,15 +1,11 @@
 /* Built with the Tailwind standalone binary — no Node required:
-     ./tailwindcss -i static/css/app.css -o static/css/build.css --watch
-   Then set CHALAANI_TAILWIND_CDN=0 and point base.html at build.css. */
+     ./tailwindcss -i static/css/app.css -o static/css/build.css --minify
+   Then set CHALAANI_TAILWIND_CDN=0. The palette itself lives in theme.css so
+   the CDN path and the built path render identically. */
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes: corporate --default, business --prefersdark;
-}
+@plugin "daisyui";
+@import "./theme.css";
+
 @source "../../templates";
 @source "../../*/templates";
 @source "../../*/forms.py";
-
-:root {
-  --font-devanagari: "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
-}
-body { font-family: var(--font-devanagari); }

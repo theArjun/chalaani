@@ -15,3 +15,6 @@ db.sqlite3-*
 staticfiles/
 media/
 .env
+
+# Tooling
+.ruff_cache/
