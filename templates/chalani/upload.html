@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}नयाँ चलानी{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+  <h1 class="text-2xl font-bold mb-1">नयाँ चलानी</h1>
+  <p class="text-sm opacity-60 mb-4">कागजको फोटो खिच्नुहोस् वा छान्नुहोस् — AI ले पढेर मस्यौदा बनाइदिन्छ.</p>
+
+  <form method="post" enctype="multipart/form-data" class="card bg-base-100 border border-base-300">
+    {% csrf_token %}
+    <div class="card-body gap-4">
+      <label class="form-control">
+        <span class="label-text mb-1">{{ form.photo.label }}</span>
+        {{ form.photo }}
+        <span class="label-text-alt opacity-60 mt-1">{{ form.photo.help_text }}</span>
+        {% if form.photo.errors %}<span class="text-error text-sm mt-1">{{ form.photo.errors.0 }}</span>{% endif %}
+      </label>
+
+      <label class="label cursor-pointer justify-start gap-3 bg-base-200 rounded-lg px-3 py-2">
+        {{ form.use_ai }}
+        <span>
+          <span class="block">{{ form.use_ai.label }}</span>
+          <span class="block text-xs opacity-60">बन्द गरे खाली मस्यौदा बन्छ, हातैले भर्नुहोस्.</span>
+        </span>
+      </label>
+
+      <div class="text-xs opacity-60 bg-base-200 rounded-lg p-3 space-y-1">
+        <p class="font-semibold">राम्रो फोटोका लागि:</p>
+        <p>· कागज समथर राखेर सिधा माथिबाट खिच्नुहोस्</p>
+        <p>· चलानी नं., मिति र सामानको तालिका पूरै आओस्</p>
+        <p>· छायाँ नपरोस्, उज्यालो ठाउँमा खिच्नुहोस्</p>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <a href="{% url 'chalani:register' %}" class="btn btn-ghost">रद्द</a>
+        <button type="submit" class="btn btn-primary">अपलोड गर्नुहोस्</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

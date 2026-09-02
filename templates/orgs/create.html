@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}नयाँ फर्म{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+  <h1 class="text-2xl font-bold mb-1">फर्म दर्ता</h1>
+  <p class="text-sm opacity-60 mb-4">चलानी दर्ता गर्नुअघि फर्मको विवरण राख्नुहोस्.</p>
+  <form method="post" class="card bg-base-100 border border-base-300">
+    {% csrf_token %}
+    <div class="card-body grid gap-3 sm:grid-cols-2">
+      {% for field in form %}
+        <label class="form-control {% if field.name == 'address' %}sm:col-span-2{% endif %}">
+          <span class="label-text text-xs mb-1">{{ field.label }}</span>
+          {{ field }}
+          {% if field.errors %}<span class="text-error text-xs mt-1">{{ field.errors.0 }}</span>{% endif %}
+        </label>
+      {% endfor %}
+      <div class="sm:col-span-2 flex justify-end"><button class="btn btn-primary">दर्ता गर्नुहोस्</button></div>
+    </div>
+  </form>
+</div>
+{% endblock %}

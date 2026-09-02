@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}फर्म सेटिङ{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">फर्म सेटिङ</h1>
+
+<div class="grid gap-4 lg:grid-cols-2">
+  <form method="post" class="card bg-base-100 border border-base-300">
+    {% csrf_token %}
+    <div class="card-body grid gap-3 sm:grid-cols-2">
+      <h2 class="font-semibold sm:col-span-2">फर्मको विवरण</h2>
+      {% for field in form %}
+        <label class="form-control {% if field.name == 'address' %}sm:col-span-2{% endif %}">
+          <span class="label-text text-xs mb-1">{{ field.label }}</span>
+          {{ field }}
+          {% if field.errors %}<span class="text-error text-xs mt-1">{{ field.errors.0 }}</span>{% endif %}
+        </label>
+      {% endfor %}
+      {% if is_owner %}
+        <div class="sm:col-span-2 flex justify-end"><button class="btn btn-primary btn-sm">सुरक्षित गर्नुहोस्</button></div>
+      {% else %}
+        <p class="sm:col-span-2 text-xs opacity-60">सम्पादन मालिकले मात्र गर्न सक्नुहुन्छ.</p>
+      {% endif %}
+    </div>
+  </form>
+
+  <div class="card bg-base-100 border border-base-300">
+    <div class="card-body">
+      <h2 class="font-semibold">सदस्यहरू</h2>
+      <table class="table table-sm">
+        <tbody>
+        {% for member in members %}
+          <tr>
+            <td>
+              <div class="font-medium">{{ member.user.display_name }}</div>
+              <div class="text-xs opacity-50">@{{ member.user.username }}</div>
+            </td>
+            <td><span class="badge badge-ghost badge-sm">{{ member.get_role_display }}</span></td>
+            <td class="text-right">
+              {% if is_owner and member.user != user %}
+                <form method="post" action="{% url 'orgs:remove_member' member.pk %}">{% csrf_token %}
+                  <button class="btn btn-ghost btn-xs text-error">हटाउनुहोस्</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      {% if is_owner %}
+        <form method="post" class="border-t border-base-300 pt-3 mt-2 grid gap-2 sm:grid-cols-[1fr_auto_auto] items-end">
+          {% csrf_token %}
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ member_form.username.label }}</span>
+            {{ member_form.username }}
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ member_form.role.label }}</span>
+            {{ member_form.role }}
+          </label>
+          <button name="add_member" value="1" class="btn btn-outline btn-sm">थप्नुहोस्</button>
+          {% if member_form.username.errors %}<span class="text-error text-xs sm:col-span-3">{{ member_form.username.errors.0 }}</span>{% endif %}
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

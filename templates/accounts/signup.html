@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}दर्ता{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-6">
+  <h1 class="text-2xl font-bold mb-1">फर्म दर्ता गर्नुहोस्</h1>
+  <p class="text-sm opacity-60 mb-4">एउटै फारमले तपाईंको खाता र फर्म दुवै बन्छ.</p>
+  <form method="post" class="card bg-base-100 border border-base-300">
+    {% csrf_token %}
+    <div class="card-body gap-3">
+      {% for field in form %}
+        <label class="form-control">
+          <span class="label-text text-xs mb-1">{{ field.label }}</span>
+          {{ field }}
+          {% if field.help_text %}<span class="label-text-alt opacity-50 mt-1">{{ field.help_text|safe }}</span>{% endif %}
+          {% if field.errors %}<span class="text-error text-xs mt-1">{{ field.errors.0 }}</span>{% endif %}
+        </label>
+      {% endfor %}
+      <button class="btn btn-primary w-full mt-2">दर्ता गर्नुहोस्</button>
+      <p class="text-center text-sm opacity-70">पहिले नै खाता छ? <a class="link link-primary" href="{% url 'accounts:login' %}">लगइन</a></p>
+    </div>
+  </form>
+</div>
+{% endblock %}

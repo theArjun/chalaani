@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load nepal %}
+{% block title %}ड्यासबोर्ड{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+  <div>
+    <h1 class="text-2xl font-bold">{{ organization }}</h1>
+    <p class="text-sm opacity-60">आ.व. {{ fy|nepnum }} · {{ today_bs }}</p>
+  </div>
+  <a href="{% url 'chalani:upload' %}" class="btn btn-primary btn-sm">+ नयाँ चलानी</a>
+</div>
+
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+  <div class="stat bg-base-100 border border-base-300 rounded-box">
+    <div class="stat-title">यस आ.व.का चलानी</div>
+    <div class="stat-value">{{ counts.total|nepnum }}</div>
+    <div class="stat-desc">{{ vendor_count|nepnum }} आपूर्तिकर्ता · {{ item_count|nepnum }} सामान</div>
+  </div>
+  <div class="stat bg-base-100 border border-base-300 rounded-box">
+    <div class="stat-title">जम्मा रकम</div>
+    <div class="stat-value text-primary">रू. {{ amount|default_if_none:0|nprs }}</div>
+    <div class="stat-desc">दर भरिएका लाइनहरूको जोड</div>
+  </div>
+  <div class="stat bg-base-100 border border-base-300 rounded-box">
+    <div class="stat-title">मस्यौदा</div>
+    <div class="stat-value {% if counts.drafts %}text-warning{% endif %}">{{ counts.drafts|nepnum }}</div>
+    <div class="stat-desc">{% if counts.extracting %}{{ counts.extracting|nepnum }} वटा पढ्दै{% else %}प्रमाणित हुन बाँकी{% endif %}</div>
+  </div>
+  <div class="stat bg-base-100 border border-base-300 rounded-box">
+    <div class="stat-title">प्रमाणित / बिल</div>
+    <div class="stat-value text-success">{{ counts.verified|nepnum }}<span class="text-base-content/40 text-2xl"> / {{ counts.billed|nepnum }}</span></div>
+    <div class="stat-desc"><a class="link" href="{% url 'chalani:vendor_report' %}">रिपोर्ट हेर्नुहोस्</a></div>
+  </div>
+</div>
+
+<div class="grid gap-4 lg:grid-cols-3">
+  <div class="card bg-base-100 border border-base-300 lg:col-span-2">
+    <div class="card-body p-4">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="font-semibold">पछिल्ला चलानी</h2>
+        <a class="link link-hover text-sm" href="{% url 'chalani:register' %}">सबै हेर्नुहोस् →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-sm">
+          <thead><tr><th>मिति</th><th>चलानी नं.</th><th>आपूर्तिकर्ता</th><th class="text-right">रकम</th><th>स्थिति</th></tr></thead>
+          <tbody>
+          {% for chalani in recent %}
+            <tr class="hover">
+              <td class="whitespace-nowrap"><a class="link link-hover" href="{{ chalani.get_absolute_url }}">{{ chalani.date|bs_np|default:"—" }}</a></td>
+              <td class="font-mono">{{ chalani.chalani_no|default:"—" }}</td>
+              <td>{{ chalani.vendor|default:"—" }}</td>
+              <td class="text-right tabular">{{ chalani.total|default_if_none:0|nprs }}</td>
+              <td><span class="badge {{ chalani.status|status_badge }} badge-sm">{{ chalani.get_status_display }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-center py-10 opacity-60">अहिलेसम्म केही छैन — <a class="link" href="{% url 'chalani:upload' %}">पहिलो चलानी थप्नुहोस्</a>.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 border border-base-300">
+    <div class="card-body p-4">
+      <h2 class="font-semibold mb-2">ठूला आपूर्तिकर्ता</h2>
+      <ul class="space-y-2">
+        {% for row in top_vendors %}
+          <li class="flex justify-between gap-2 text-sm">
+            <span class="truncate">{{ row.vendor__name_np|default:row.vendor__name }}</span>
+            <span class="tabular font-medium whitespace-nowrap">रू. {{ row.amount|default_if_none:0|nprs }}</span>
+          </li>
+        {% empty %}
+          <li class="text-sm opacity-60">दर भरिएपछि यहाँ देखिन्छ.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

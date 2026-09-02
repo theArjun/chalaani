@@ -1,0 +1,7 @@
+{% if error %}
+  <span class="text-error">{{ error }}</span>
+{% elif ad %}
+  <span class="text-success">✓</span>
+  <span>{{ weekday }}, {{ bs_np }}</span>
+  <span class="opacity-60">· ई.सं. {{ ad|date:"Y-m-d" }} · आ.व. {{ fy }}</span>
+{% endif %}

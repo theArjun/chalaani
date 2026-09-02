@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{% if item %}{{ item }}{% else %}नयाँ सामान{% endif %}{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+  <h1 class="text-2xl font-bold mb-4">{% if item %}सामान सम्पादन{% else %}नयाँ सामान{% endif %}</h1>
+  <form method="post" class="card bg-base-100 border border-base-300">
+    {% csrf_token %}
+    <div class="card-body gap-3">
+      {% for field in form %}
+        <label class="form-control">
+          <span class="label-text text-xs mb-1">{{ field.label }}</span>
+          {{ field }}
+          {% if field.errors %}<span class="text-error text-xs mt-1">{{ field.errors.0 }}</span>{% endif %}
+        </label>
+      {% endfor %}
+      <div class="flex justify-end gap-2">
+        <a href="{% url 'chalani:item_list' %}" class="btn btn-ghost">रद्द</a>
+        <button class="btn btn-primary">सुरक्षित गर्नुहोस्</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

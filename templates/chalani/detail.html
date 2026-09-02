@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load nepal %}
+{% block title %}चलानी {{ chalani.chalani_no|default:chalani.pk }}{% endblock %}
+
+{% block content %}
+<div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+  <div>
+    <div class="breadcrumbs text-sm p-0 opacity-60">
+      <ul><li><a href="{% url 'chalani:register' %}">चलानी दर्ता</a></li><li>{{ chalani.chalani_no|default:"मस्यौदा" }}</li></ul>
+    </div>
+    <h1 class="text-2xl font-bold flex items-center gap-2">
+      {{ chalani.chalani_no|default:"चलानी नं. छैन" }}
+      <span class="badge {{ chalani.status|status_badge }}">{{ chalani.get_status_display }}</span>
+      {% if chalani.extracted_by_ai %}<span class="badge badge-outline badge-sm">AI ले पढेको</span>{% endif %}
+    </h1>
+    <p class="text-sm opacity-60">
+      {% if chalani.date %}{{ chalani.date|bs_long }} · ई.सं. {{ chalani.date|date:"Y-m-d" }} · आ.व. {{ chalani.fiscal_year|nepnum }}{% endif %}
+    </p>
+  </div>
+
+  <div class="flex flex-wrap gap-2">
+    {% if chalani.status == "draft" and can_verify %}
+      <form method="post" action="{% url 'chalani:verify' chalani.pk %}">{% csrf_token %}
+        <button class="btn btn-success btn-sm" {% if gaps %}disabled title="{{ gaps|join:', ' }}"{% endif %}>✓ प्रमाणित गर्नुहोस्</button>
+      </form>
+    {% elif chalani.status == "verified" and can_verify %}
+      <form method="post" action="{% url 'chalani:bill' chalani.pk %}">{% csrf_token %}
+        <button class="btn btn-info btn-sm">बिल भयो भन्नुहोस्</button>
+      </form>
+      <form method="post" action="{% url 'chalani:reopen' chalani.pk %}">{% csrf_token %}
+        <button class="btn btn-ghost btn-sm">मस्यौदामा फर्काउनुहोस्</button>
+      </form>
+    {% endif %}
+    {% if chalani.status == "draft" %}
+      <form method="post" action="{% url 'chalani:delete' chalani.pk %}"
+            onsubmit="return confirm('यो मस्यौदा मेट्ने?')">{% csrf_token %}
+        <button class="btn btn-ghost btn-sm text-error">मेट्नुहोस्</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+{% partialdef status inline %}
+<div id="status-panel"
+     {% if chalani.status == "extracting" %}
+       hx-get="{% url 'chalani:status' chalani.pk %}" hx-trigger="every 3s" hx-swap="outerHTML"
+     {% endif %}>
+  {% if chalani.status == "extracting" %}
+    <div class="alert alert-warning mb-4">
+      <span class="loading loading-spinner"></span>
+      <div>
+        <p class="font-semibold">AI ले फोटो पढ्दै छ…</p>
+        <p class="text-sm opacity-70">केही सेकेन्डमा मस्यौदा आफैँ देखिनेछ. यो पेज खुला राख्नुहोस्.</p>
+      </div>
+    </div>
+  {% elif chalani.extraction_error %}
+    <div class="alert alert-error mb-4">
+      <div>
+        <p class="font-semibold">AI ले पढ्न सकेन — हातैले भर्नुहोस्.</p>
+        <p class="text-xs font-mono opacity-70 break-all">{{ chalani.extraction_error }}</p>
+      </div>
+      <form method="post" action="{% url 'chalani:reextract' chalani.pk %}">{% csrf_token %}
+        <button class="btn btn-sm">फेरि प्रयास</button>
+      </form>
+    </div>
+  {% endif %}
+</div>
+{% endpartialdef %}
+
+{% if gaps and chalani.status == "draft" %}
+  <div class="alert alert-info mb-4">
+    <div>
+      <p class="font-semibold">प्रमाणित गर्न बाँकी:</p>
+      <ul class="list-disc list-inside text-sm">{% for gap in gaps %}<li>{{ gap }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+{% endif %}
+
+<div class="grid gap-4 lg:grid-cols-[minmax(0,22rem)_1fr]">
+  <div class="order-2 lg:order-1">
+    <div class="card bg-base-100 border border-base-300 lg:sticky lg:top-20">
+      <div class="card-body p-3">
+        <h2 class="font-semibold text-sm mb-1">कागजको फोटो</h2>
+        {% if chalani.photo %}
+          <a href="{% url 'chalani:photo' chalani.pk %}" target="_blank" rel="noopener">
+            <img src="{% url 'chalani:photo' chalani.pk %}" alt="चलानी फोटो"
+                 class="rounded-lg border border-base-300 w-full object-contain max-h-[70vh] bg-base-200">
+          </a>
+          <p class="text-xs opacity-50 mt-1">पूरा आकारमा हेर्न फोटोमा क्लिक गर्नुहोस्.</p>
+        {% else %}
+          <div class="grid place-items-center h-48 bg-base-200 rounded-lg text-sm opacity-60">फोटो छैन</div>
+        {% endif %}
+        <div class="text-xs opacity-50 mt-2 space-y-0.5">
+          <p>थपियो: {{ chalani.created_by.display_name }} · {{ chalani.created_at|date:"Y-m-d H:i" }}</p>
+          {% if chalani.verified_by %}<p>प्रमाणित: {{ chalani.verified_by.display_name }} · {{ chalani.verified_at|date:"Y-m-d H:i" }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form method="post" class="order-1 lg:order-2 space-y-4">
+    {% csrf_token %}
+    <div class="card bg-base-100 border border-base-300">
+      <div class="card-body p-4">
+        <h2 class="font-semibold mb-2">चलानीको विवरण</h2>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ form.vendor.label }}</span>
+            {{ form.vendor }}
+            {% if form.vendor.errors %}<span class="text-error text-xs mt-1">{{ form.vendor.errors.0 }}</span>{% endif %}
+            <a class="link link-hover text-xs mt-1 opacity-60" href="{% url 'chalani:vendor_create' %}">+ नयाँ आपूर्तिकर्ता दर्ता</a>
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ form.chalani_no.label }}</span>
+            {{ form.chalani_no }}
+            {% if form.chalani_no.errors %}<span class="text-error text-xs mt-1">{{ form.chalani_no.errors.0 }}</span>{% endif %}
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs mb-1 flex justify-between">
+              <span>{{ form.date_bs.label }}</span>
+              <button type="button" class="link link-primary text-xs"
+                      hx-get="{% url 'nepal:date_input' %}?name=date_bs&value=today"
+                      hx-target="closest .bs-date" hx-swap="outerHTML">आज</button>
+            </span>
+            {{ form.date_bs }}
+            {% if form.date_bs.errors %}<span class="text-error text-xs mt-1">{{ form.date_bs.errors.0 }}</span>{% endif %}
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ form.vehicle_no.label }}</span>
+            {{ form.vehicle_no }}
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ form.received_by.label }}</span>
+            {{ form.received_by }}
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs mb-1">{{ form.remarks.label }}</span>
+            {{ form.remarks }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 border border-base-300">
+      <div class="card-body p-4">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="font-semibold">सामानको विवरण</h2>
+          <button type="button" class="btn btn-outline btn-sm"
+                  hx-get="{% url 'chalani:add_row' chalani.pk %}"
+                  hx-include="[name='items-TOTAL_FORMS']"
+                  hx-target="#item-rows" hx-swap="beforeend">+ लाइन थप्नुहोस्</button>
+        </div>
+        {{ formset.management_form }}
+        {% if formset.non_form_errors %}<div class="alert alert-error mb-2">{{ formset.non_form_errors }}</div>{% endif %}
+
+        <div class="overflow-x-auto">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th class="w-8">#</th>
+                <th class="min-w-56">कागजमा लेखिएको</th>
+                <th class="min-w-48">क्याटलग सामान</th>
+                <th class="w-28 text-right">परिमाण</th>
+                <th class="w-32">इकाई</th>
+                <th class="w-28 text-right">दर</th>
+                <th class="w-10">हटाउने</th>
+              </tr>
+            </thead>
+            <tbody id="item-rows">
+              {% for form in formset %}
+                {% partial item_row %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex flex-wrap items-end justify-between gap-3 mt-3 pt-3 border-t border-base-300">
+          <p class="text-sm opacity-70 max-w-md">
+            {% if chalani.total_amount %}अक्षरुपी: {{ chalani.total_amount|in_words_np }}{% endif %}
+          </p>
+          <p class="text-lg font-semibold">जम्मा: रू. {{ chalani.total_amount|nprs }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <a href="{% url 'chalani:register' %}" class="btn btn-ghost">फिर्ता</a>
+      <button type="submit" class="btn btn-primary" {% if chalani.status == "billed" %}disabled{% endif %}>सुरक्षित गर्नुहोस्</button>
+    </div>
+  </form>
+</div>
+
+{% partialdef item_row %}
+<tr>
+  <td class="opacity-40 text-xs">{{ forloop.counter|default:new_total|nepnum }}</td>
+  <td>
+    {{ form.id }}
+    {{ form.description }}
+    {% if form.description.errors %}<span class="text-error text-xs">{{ form.description.errors.0 }}</span>{% endif %}
+  </td>
+  <td>
+    {{ form.item }}
+    {% if not form.instance.item_id and form.instance.pk %}
+      <span class="text-xs text-warning">जोडिएको छैन</span>
+    {% endif %}
+  </td>
+  <td>{{ form.qty }}{% if form.qty.errors %}<span class="text-error text-xs">{{ form.qty.errors.0 }}</span>{% endif %}</td>
+  <td>{{ form.unit }}</td>
+  <td>{{ form.rate }}</td>
+  <td class="text-center">
+    {% if form.DELETE %}<input type="checkbox" name="{{ form.DELETE.html_name }}" class="checkbox checkbox-sm checkbox-error">{% endif %}
+  </td>
+</tr>
+{% if oob %}
+  <input type="hidden" name="items-TOTAL_FORMS" value="{{ new_total }}" id="id_items-TOTAL_FORMS" hx-swap-oob="true">
+{% endif %}
+{% endpartialdef %}
+{% endblock %}

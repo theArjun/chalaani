@@ -1,0 +1,131 @@
+{% load static nepal %}<!DOCTYPE html>
+<html lang="ne" data-theme="{{ theme|default:'corporate' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}चलानी{% endblock %} · chalaani</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+  {% if TAILWIND_CDN %}
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% endif %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+  <style>
+    :root { font-feature-settings: "kern" 1; }
+    body { font-family: "Noto Sans Devanagari", Inter, ui-sans-serif, system-ui, sans-serif; }
+    .font-mono, .tabular { font-variant-numeric: tabular-nums; }
+    .htmx-request .htmx-indicator { opacity: 1; }
+    .htmx-indicator { opacity: 0; transition: opacity .2s; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-base-200/60" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<div class="drawer lg:drawer-open">
+  <input id="nav-drawer" type="checkbox" class="drawer-toggle">
+
+  <div class="drawer-content flex flex-col min-h-screen">
+    <header class="navbar bg-base-100 border-b border-base-300 sticky top-0 z-30 gap-2">
+      <label for="nav-drawer" class="btn btn-ghost btn-square lg:hidden" aria-label="मेनु">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </label>
+
+      <div class="flex-1 min-w-0">
+        {% if organization %}
+          <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost normal-case max-w-[60vw]">
+              <span class="truncate font-semibold">{{ organization }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-40 w-72 p-2 shadow-lg border border-base-300">
+              <li class="menu-title">फर्म छान्नुहोस्</li>
+              {% for m in memberships %}
+                <li>
+                  <form method="post" action="{% url 'orgs:switch' m.organization_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left {% if m.organization_id == organization.id %}active{% endif %}">
+                      {{ m.organization }}
+                      <span class="badge badge-ghost badge-sm ml-auto">{{ m.get_role_display }}</span>
+                    </button>
+                  </form>
+                </li>
+              {% endfor %}
+              <li><a href="{% url 'orgs:create' %}">+ नयाँ फर्म दर्ता</a></li>
+            </ul>
+          </div>
+        {% else %}
+          <span class="btn btn-ghost text-lg font-bold">चलानी</span>
+        {% endif %}
+      </div>
+
+      {% if organization %}
+        <a href="{% url 'chalani:upload' %}" class="btn btn-primary btn-sm gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3" stroke-width="2"/></svg>
+          <span class="hidden sm:inline">नयाँ चलानी</span>
+        </a>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder">
+            <div class="bg-neutral text-neutral-content w-9 rounded-full grid place-items-center">
+              <span class="text-sm">{{ user.display_name|slice:":1"|upper }}</span>
+            </div>
+          </div>
+          <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-40 w-56 p-2 shadow-lg border border-base-300">
+            <li class="menu-title">{{ user.display_name }}</li>
+            {% if membership %}<li class="px-4 pb-1 text-xs opacity-60">{{ membership.get_role_display }}</li>{% endif %}
+            <li><a href="{% url 'orgs:settings' %}">फर्म सेटिङ</a></li>
+            <li>
+              <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}
+                <button type="submit" class="w-full text-left">लगआउट</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
+    </header>
+
+    <main class="flex-1 p-4 lg:p-6 max-w-7xl w-full mx-auto">
+      {% include "_messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer footer-center p-4 text-xs text-base-content/50">
+      <p>आजको मिति: {{ today_bs }} · आ.व. {{ current_fy|nepnum }}</p>
+    </footer>
+  </div>
+
+  <div class="drawer-side z-40">
+    <label for="nav-drawer" class="drawer-overlay" aria-label="बन्द गर्नुहोस्"></label>
+    <aside class="bg-base-100 border-r border-base-300 min-h-full w-64">
+      <div class="p-4 border-b border-base-300">
+        <a href="{% url 'chalani:dashboard' %}" class="flex items-center gap-2">
+          <span class="text-2xl">📋</span>
+          <span>
+            <span class="block font-bold text-lg leading-tight">चलानी</span>
+            <span class="block text-xs opacity-50 leading-tight">delivery challan register</span>
+          </span>
+        </a>
+      </div>
+      {% if organization %}
+        <ul class="menu p-3 gap-1 w-full">
+          <li><a href="{% url 'chalani:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>ड्यासबोर्ड</a></li>
+          <li><a href="{% url 'chalani:register' %}" {% if request.resolver_match.url_name == 'register' %}class="active"{% endif %}>चलानी दर्ता</a></li>
+          <li><a href="{% url 'chalani:vendor_list' %}" {% if 'vendor' in request.resolver_match.url_name %}class="active"{% endif %}>आपूर्तिकर्ता</a></li>
+          <li><a href="{% url 'chalani:item_list' %}" {% if 'item' in request.resolver_match.url_name %}class="active"{% endif %}>सामान क्याटलग</a></li>
+          <li><a href="{% url 'chalani:vendor_report' %}" {% if request.resolver_match.url_name == 'vendor_report' %}class="active"{% endif %}>रिपोर्ट</a></li>
+          <li class="mt-2 border-t border-base-300 pt-2"><a href="{% url 'orgs:settings' %}">फर्म सेटिङ</a></li>
+        </ul>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

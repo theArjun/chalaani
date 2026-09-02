@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load nepal %}
+{% block title %}आपूर्तिकर्ता{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+  <div><h1 class="text-2xl font-bold">आपूर्तिकर्ता</h1><p class="text-sm opacity-60">Suppliers</p></div>
+  <a href="{% url 'chalani:vendor_create' %}" class="btn btn-primary btn-sm">+ नयाँ आपूर्तिकर्ता</a>
+</div>
+
+<input type="search" name="q" value="{{ q }}" placeholder="नाम वा PAN ले खोज्नुहोस्…"
+       class="input input-bordered w-full max-w-sm mb-4"
+       hx-get="{% url 'chalani:vendor_list' %}" hx-target="#vendor-rows" hx-swap="outerHTML"
+       hx-trigger="input changed delay:300ms" hx-push-url="true">
+
+{% partialdef rows inline %}
+<div id="vendor-rows" class="card bg-base-100 border border-base-300 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="table table-zebra">
+      <thead><tr><th>नाम</th><th>PAN/VAT</th><th>फोन</th><th>ठेगाना</th><th class="text-right">चलानी</th><th></th></tr></thead>
+      <tbody>
+      {% for vendor in vendors %}
+        <tr class="hover">
+          <td>
+            <div class="font-medium">{{ vendor.name_np|default:vendor.name }}</div>
+            {% if vendor.name_np %}<div class="text-xs opacity-50">{{ vendor.name }}</div>{% endif %}
+            {% if not vendor.is_active %}<span class="badge badge-ghost badge-xs">निष्क्रिय</span>{% endif %}
+          </td>
+          <td class="font-mono">{{ vendor.pan_no|nepnum|default:"—" }}</td>
+          <td class="font-mono">{{ vendor.phone|nepnum|default:"—" }}</td>
+          <td class="text-sm">{{ vendor.address|default:"" }}{% if vendor.district %}, {{ vendor.district }}{% endif %}</td>
+          <td class="text-right tabular">{{ vendor.chalani_count|nepnum }}</td>
+          <td class="text-right"><a class="btn btn-ghost btn-xs" href="{% url 'chalani:vendor_edit' vendor.pk %}">सम्पादन</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center py-12 opacity-60">कुनै आपूर्तिकर्ता छैन.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endpartialdef %}
+{% endblock %}
