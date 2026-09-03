@@ -391,6 +391,22 @@ class LanguageSwitchTests(TestCase):
         )
         self.assertRegex(response.content.decode(), r"\d+ (day|month|year)s? ago")
 
+    def test_language_switch_is_a_plain_form_not_a_hover_menu(self):
+        """Regression: the switcher lived in a daisyUI dropdown that never opened.
+
+        The control has to be submittable from the page as rendered — one form,
+        one submit button per language, no focus or hover state in between.
+        """
+        response = self.client.get(reverse("chalani:register"))
+        body = response.content.decode()
+        self.assertIn(f'action="{reverse("set_language")}"', body)
+        for code in ("ne", "en"):
+            self.assertIn(f'name="language" value="{code}"', body)
+        header = body[: body.index("</header>")]
+        self.assertIn('name="language"', header)
+        # Nothing in the header may depend on a dropdown opening.
+        self.assertNotIn('tabindex="0" role="button"', body)
+
 
 class McpServerTests(TestCase):
     """The MCP surface obeys the same org scoping and write gating as the web app."""

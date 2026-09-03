@@ -83,15 +83,20 @@ uv run python manage.py mcp --org demo-nirman-sewa --allow-writes
 uv run python manage.py mcp --org demo-nirman-sewa --transport streamable-http --port 8931
 ```
 
-Client config (stdio):
+It is already registered with Claude Desktop on this machine (read-only), in
+`~/Library/Application Support/Claude/claude_desktop_config.json` — restart
+Claude Desktop to pick it up. Add `"--allow-writes"` to the `args` there if you
+want the assistant to be able to change data. Client config (stdio):
 
 ```json
 {
   "mcpServers": {
     "chalaani": {
       "command": "uv",
-      "args": ["run", "python", "manage.py", "mcp", "--org", "demo-nirman-sewa"],
-      "cwd": "/path/to/chalaani"
+      "args": [
+        "run", "--directory", "/path/to/chalaani",
+        "python", "manage.py", "mcp", "--org", "demo-nirman-sewa"
+      ]
     }
   }
 }
@@ -199,7 +204,16 @@ micro-labels on table headers, tabular figures everywhere a number can line up
 in a column, and tinted status chips that stay quiet across two hundred rows.
 Light and dark are both designed (not auto-inverted); the navbar control writes
 the choice to `localStorage`, and an inline script in `<head>` applies it before
-first paint so there is no flash. There is a print stylesheet too — a register
+first paint so there is no flash.
+
+The header menus are native `<details>`/`<summary>`, not daisyUI's default
+`div.dropdown`. That default only opens on `:focus-within`, so if the trigger
+never takes focus the menu silently stays `display: none` — which is exactly
+what happened here, leaving the firm switcher and the log-out menu unopenable.
+`<details>` is excluded from daisyUI's hide rule and opens on click with no
+focus dependency and no JS (a few lines close it on outside-click or Escape).
+The language switcher went further and stopped being a menu at all: with two
+languages, a segmented control is one click and cannot fail to open. There is a print stylesheet too — a register
 or a report prints as a clean black-on-white table.
 
 ## Production notes

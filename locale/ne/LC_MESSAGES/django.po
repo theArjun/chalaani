@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-02 23:02+0545\n"
+"POT-Creation-Date: 2026-09-02 23:25+0545\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: accounts/admin.py:12 templates/accounts/login.html:8 templates/base.html:6
-#: templates/base.html:82 templates/base.html:157
+#: templates/base.html:93 templates/base.html:158
 #: templates/chalani/detail.html:3 templates/chalani/report.html:26
 #: templates/chalani/vendor_list.html:19
 msgid "Chalani"
@@ -318,7 +318,7 @@ msgstr "ढाँचा: YYYY-MM-DD"
 msgid "· AD"
 msgstr "· ई.सं."
 
-#: nepal/templates/nepal/date_preview.html:7 templates/base.html:146
+#: nepal/templates/nepal/date_preview.html:7 templates/base.html:147
 #: templates/chalani/detail.html:17
 msgid "· FY"
 msgstr "· आ.व."
@@ -500,69 +500,69 @@ msgstr "एउटै फारमले तपाईंको खाता र �
 msgid "Already have an account?"
 msgstr "पहिले नै खाता छ?"
 
-#: templates/base.html:54
+#: templates/base.html:65
 msgid "Menu"
 msgstr "मेनु"
 
-#: templates/base.html:66
+#: templates/base.html:77
 msgid "Choose a firm"
 msgstr "फर्म छान्नुहोस्"
 
-#: templates/base.html:78
+#: templates/base.html:89
 msgid "+ Register a new firm"
 msgstr "+ नयाँ फर्म दर्ता"
 
-#: templates/base.html:89 templates/chalani/upload.html:3
+#: templates/base.html:100 templates/chalani/upload.html:3
 #: templates/chalani/upload.html:6
 msgid "New chalani"
 msgstr "नयाँ चलानी"
 
-#: templates/base.html:94
+#: templates/base.html:105
 msgid "Light / dark"
 msgstr "उज्यालो / अँध्यारो"
 
-#: templates/base.html:100 templates/base.html:105
+#: templates/base.html:111
 msgid "Language"
 msgstr "भाषा"
 
-#: templates/base.html:129 templates/base.html:169
+#: templates/base.html:130 templates/base.html:170
 #: templates/orgs/settings.html:3 templates/orgs/settings.html:5
 msgid "Firm settings"
 msgstr "फर्म सेटिङ"
 
-#: templates/base.html:132
+#: templates/base.html:133
 msgid "Log out"
 msgstr "लगआउट"
 
-#: templates/base.html:146
+#: templates/base.html:147
 msgid "Today:"
 msgstr "आजको मिति:"
 
-#: templates/base.html:151
+#: templates/base.html:152
 msgid "Close"
 msgstr "बन्द गर्नुहोस्"
 
-#: templates/base.html:164 templates/chalani/dashboard.html:3
+#: templates/base.html:165 templates/chalani/dashboard.html:3
 msgid "Dashboard"
 msgstr "ड्यासबोर्ड"
 
-#: templates/base.html:165 templates/chalani/detail.html:9
+#: templates/base.html:166 templates/chalani/detail.html:9
 #: templates/chalani/register.html:3 templates/chalani/register.html:8
 msgid "Chalani register"
 msgstr "चलानी दर्ता"
 
-#: templates/base.html:166 templates/chalani/dashboard.html:45
+#: templates/base.html:167 templates/chalani/dashboard.html:45
 #: templates/chalani/register.html:40 templates/chalani/vendor_list.html:3
 #: templates/chalani/vendor_list.html:6
 msgid "Suppliers"
 msgstr "आपूर्तिकर्ता"
 
-#: templates/base.html:167 templates/chalani/item_list.html:3
+#: templates/base.html:168 templates/chalani/item_list.html:3
 #: templates/chalani/item_list.html:7
 msgid "Item catalog"
 msgstr "सामान क्याटलग"
 
-#: templates/base.html:168 templates/chalani/report.html:3
+#: templates/base.html:169 templates/chalani/report.html:3
 msgid "Report"
 msgstr "रिपोर्ट"
 
