@@ -10,9 +10,22 @@ class ChalaniItemInline(admin.TabularInline):
 
 @admin.register(Chalani)
 class ChalaniAdmin(admin.ModelAdmin):
-    list_display = ("chalani_no", "date_bs", "vendor", "organization", "status", "extracted_by_ai")
+    list_display = (
+        "chalani_no",
+        "date_bs",
+        "vendor",
+        "organization",
+        "status",
+        "extracted_by_ai",
+    )
     list_filter = ("organization", "status", "fiscal_year", "extracted_by_ai")
-    search_fields = ("chalani_no", "vehicle_no", "received_by", "vendor__name", "vendor__name_np")
+    search_fields = (
+        "chalani_no",
+        "vehicle_no",
+        "received_by",
+        "vendor__name",
+        "vendor__name_np",
+    )
     date_hierarchy = "date"
     inlines = [ChalaniItemInline]
     readonly_fields = ("raw_extraction", "fiscal_year", "created_at", "updated_at")
@@ -27,6 +40,13 @@ class VendorAdmin(admin.ModelAdmin):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ("name", "name_np", "unit", "default_rate", "organization", "is_active")
+    list_display = (
+        "name",
+        "name_np",
+        "unit",
+        "default_rate",
+        "organization",
+        "is_active",
+    )
     list_filter = ("organization", "unit", "is_active")
     search_fields = ("name", "name_np")

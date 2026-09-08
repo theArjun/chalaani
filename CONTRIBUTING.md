@@ -87,3 +87,30 @@ them, say why in the pull request:
 
 Use the issue templates. For anything security-related, do **not** open a public
 issue — see [SECURITY.md](SECURITY.md).
+
+## Where the tests live
+
+Each app keeps its own tests, one module per subject:
+
+| Module | Subject |
+| --- | --- |
+| `nepal/test_dates_edges.py` | Bikram Sambat parsing, formatting, fiscal years |
+| `nepal/test_numbers_edges.py` | lakh/crore grouping and amounts in words |
+| `nepal/test_units_edges.py` | unit folding, including every declared alias |
+| `nepal/test_validators.py` | PAN, phone and vehicle-plate rules |
+| `nepal/test_forms.py`, `nepal/test_views.py` | the BS date field and its HTMX preview |
+| `nepal/test_templatetags.py` | every filter, in both languages |
+| `orgs/tests.py` | slugs, roles, the current-organization middleware, the screens |
+| `accounts/tests.py` | signing up, logging in, what a user is called |
+| `chalani/tests.py` | the original register, verify and MCP tests |
+| `chalani/test_models.py` | date syncing, totals, what blocks verification |
+| `chalani/test_services.py` | vendor and item matching, applying a reading |
+| `chalani/test_screens.py` | filters, CSV, reports, catalog, transitions, photos |
+| `chalani/test_mcp.py` | every MCP tool, directly and through a built server |
+| `chalani/test_commands.py` | the demo seed |
+| `extraction/tests.py` | the schema, the gate, and the failure landings |
+| `config/tests.py` | project-wide invariants: privacy, URLs, catalog, admin |
+
+Put a new test next to the ones about the same subject. If a change touches
+tenancy, add the "another firm cannot see this" case — every screen and every
+MCP tool has one.

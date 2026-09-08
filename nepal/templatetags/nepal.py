@@ -45,7 +45,9 @@ def bs_date_long(value):
     if value is None:
         return ""
     if in_nepali():
-        return dates.format_bs(value, "{weekday_np}, {d} {month_np} {y}", devanagari=True)
+        return dates.format_bs(
+            value, "{weekday_np}, {d} {month_np} {y}", devanagari=True
+        )
     return dates.format_bs(value, "{weekday_en}, {d} {month_en} {y}")
 
 

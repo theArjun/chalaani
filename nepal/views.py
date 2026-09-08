@@ -36,9 +36,13 @@ def date_preview(request):
             "ad": ad,
             # Bikram Sambat either way — only the script follows the language.
             "bs_text": (
-                dates.bs_display(bs) if nepali else dates.format_bs(bs, "{d} {month_en} {y}")
+                dates.bs_display(bs)
+                if nepali
+                else dates.format_bs(bs, "{d} {month_en} {y}")
             ),
-            "weekday": dates.format_bs(bs, "{weekday_np}" if nepali else "{weekday_en}"),
+            "weekday": dates.format_bs(
+                bs, "{weekday_np}" if nepali else "{weekday_en}"
+            ),
             "fy": dates.fiscal_year(bs),
         },
     )

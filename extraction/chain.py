@@ -23,10 +23,14 @@ class ExtractionUnavailable(RuntimeError):
 def build_chain():
     """`ChatAnthropic(...).with_structured_output(ChalaniExtraction)` — that's the pipeline."""
     if not settings.EXTRACTION_ENABLED:
-        raise ExtractionUnavailable(_("CHALAANI_EXTRACTION_ENABLED=0 — AI reading is switched off."))
+        raise ExtractionUnavailable(
+            _("CHALAANI_EXTRACTION_ENABLED=0 — AI reading is switched off.")
+        )
     if not settings.ANTHROPIC_API_KEY:
         raise ExtractionUnavailable(
-            _("ANTHROPIC_API_KEY is not set — put it in .env; AI reading is disabled without it.")
+            _(
+                "ANTHROPIC_API_KEY is not set — put it in .env; AI reading is disabled without it."
+            )
         )
 
     from langchain_anthropic import ChatAnthropic
@@ -44,7 +48,9 @@ def build_chain():
     return llm.with_structured_output(ChalaniExtraction, method="json_schema")
 
 
-def extract_from_image(image_bytes: bytes, mime_type: str = "image/jpeg") -> ChalaniExtraction:
+def extract_from_image(
+    image_bytes: bytes, mime_type: str = "image/jpeg"
+) -> ChalaniExtraction:
     from langchain_core.messages import HumanMessage, SystemMessage
 
     today = npdates.today_bs()
@@ -65,5 +71,9 @@ def extract_from_image(image_bytes: bytes, mime_type: str = "image/jpeg") -> Cha
             ]
         ),
     ]
-    logger.info("chalani extraction: sending %d bytes to %s", len(image_bytes), settings.EXTRACTION_MODEL)
+    logger.info(
+        "chalani extraction: sending %d bytes to %s",
+        len(image_bytes),
+        settings.EXTRACTION_MODEL,
+    )
     return build_chain().invoke(messages)

@@ -25,7 +25,10 @@ class ExtractedItem(BaseModel):
         default=None,
         description="Romanised/English rendering of the description, if the original is Devanagari.",
     )
-    qty: float | None = Field(default=None, description="Quantity as a number. Convert Devanagari digits (१२.५ -> 12.5).")
+    qty: float | None = Field(
+        default=None,
+        description="Quantity as a number. Convert Devanagari digits (१२.५ -> 12.5).",
+    )
     unit: str | None = Field(
         default=None,
         description=(
@@ -33,23 +36,32 @@ class ExtractedItem(BaseModel):
             "Leave null if the slip does not say."
         ),
     )
-    rate: float | None = Field(default=None, description="Per-unit rate in NPR, if the slip shows one.")
-    amount: float | None = Field(default=None, description="Line total in NPR, if the slip shows one.")
+    rate: float | None = Field(
+        default=None, description="Per-unit rate in NPR, if the slip shows one."
+    )
+    amount: float | None = Field(
+        default=None, description="Line total in NPR, if the slip shows one."
+    )
 
 
 class ChalaniExtraction(BaseModel):
     """Everything readable off a single chalani / delivery-note photo."""
 
     vendor_name: str | None = Field(
-        default=None, description="Supplier firm name, romanised if the original is Devanagari."
+        default=None,
+        description="Supplier firm name, romanised if the original is Devanagari.",
     )
     vendor_name_np: str | None = Field(
-        default=None, description="Supplier firm name exactly as printed, in Devanagari."
+        default=None,
+        description="Supplier firm name exactly as printed, in Devanagari.",
     )
     vendor_pan: str | None = Field(
-        default=None, description="Supplier PAN/VAT number — nine digits, often labelled 'PAN No.' or 'स्थायी लेखा नं.'"
+        default=None,
+        description="Supplier PAN/VAT number — nine digits, often labelled 'PAN No.' or 'स्थायी लेखा नं.'",
     )
-    vendor_phone: str | None = Field(default=None, description="Supplier phone number as printed.")
+    vendor_phone: str | None = Field(
+        default=None, description="Supplier phone number as printed."
+    )
 
     chalani_no: str | None = Field(
         default=None,
@@ -70,26 +82,40 @@ class ChalaniExtraction(BaseModel):
         ),
     )
     vehicle_no: str | None = Field(
-        default=None, description="Vehicle/lorry number as written, e.g. 'बा १२ ख ३४५६' or 'Ba 12 Kha 3456'."
+        default=None,
+        description="Vehicle/lorry number as written, e.g. 'बा १२ ख ३४५६' or 'Ba 12 Kha 3456'.",
     )
-    driver_name: str | None = Field(default=None, description="Driver's name, if written.")
+    driver_name: str | None = Field(
+        default=None, description="Driver's name, if written."
+    )
     received_by: str | None = Field(
-        default=None, description="Name of whoever signed for the goods (बुझिलिने / प्राप्तकर्ता)."
+        default=None,
+        description="Name of whoever signed for the goods (बुझिलिने / प्राप्तकर्ता).",
     )
-    destination: str | None = Field(default=None, description="Delivery site or address written on the slip.")
+    destination: str | None = Field(
+        default=None, description="Delivery site or address written on the slip."
+    )
 
     items: list[ExtractedItem] = Field(
-        default_factory=list, description="One entry per row of the goods table, top to bottom."
+        default_factory=list,
+        description="One entry per row of the goods table, top to bottom.",
     )
 
-    grand_total: float | None = Field(default=None, description="Grand total in NPR, if the slip shows one.")
-    remarks: str | None = Field(default=None, description="Any other handwritten note worth keeping.")
+    grand_total: float | None = Field(
+        default=None, description="Grand total in NPR, if the slip shows one."
+    )
+    remarks: str | None = Field(
+        default=None, description="Any other handwritten note worth keeping."
+    )
 
     legibility: Literal["good", "fair", "poor"] = Field(
         default="fair", description="How readable the photo was overall."
     )
     confidence: float = Field(
-        default=0.5, ge=0.0, le=1.0, description="0-1 confidence that the header fields are correct."
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="0-1 confidence that the header fields are correct.",
     )
     unreadable_fields: list[str] = Field(
         default_factory=list,

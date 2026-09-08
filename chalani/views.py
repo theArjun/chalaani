@@ -73,7 +73,8 @@ def _filtered_register(request):
             except npdates.InvalidBikramSambatDate:
                 messages.warning(
                     request,
-                    _("Could not read the date '%(value)s' — filter skipped.") % {"value": raw},
+                    _("Could not read the date '%(value)s' — filter skipped.")
+                    % {"value": raw},
                 )
     return qs, {
         "q": query,
@@ -120,7 +121,10 @@ def upload(request):
             chalani.save()
             if form.cleaned_data["use_ai"]:
                 enqueue_extraction(chalani)
-                messages.info(request, _("Reading the photo — the draft will be ready in a moment."))
+                messages.info(
+                    request,
+                    _("Reading the photo — the draft will be ready in a moment."),
+                )
             return redirect(chalani)
     else:
         form = ChalaniUploadForm()
@@ -163,7 +167,9 @@ def detail(request, pk):
         messages.error(request, _("Some fields need fixing — see below."))
     else:
         form = ChalaniForm(instance=chalani, organization=request.organization)
-        formset = ChalaniItemFormSet(instance=chalani, organization=request.organization)
+        formset = ChalaniItemFormSet(
+            instance=chalani, organization=request.organization
+        )
 
     return render(
         request,
@@ -217,7 +223,9 @@ def verify(request, pk):
     gaps = chalani.missing_for_verification()
     if gaps:
         messages.error(
-            request, _("Cannot verify yet: %(gaps)s") % {"gaps": ", ".join(str(g) for g in gaps)}
+            request,
+            _("Cannot verify yet: %(gaps)s")
+            % {"gaps": ", ".join(str(g) for g in gaps)},
         )
         return redirect(chalani)
     chalani.status = Chalani.Status.VERIFIED
@@ -270,7 +278,12 @@ def reextract(request, pk):
     if not chalani.photo:
         messages.error(request, _("There is no photo."))
     elif chalani.items.exists():
-        messages.error(request, _("Remove the existing lines first — AI never overwrites what is filled in."))
+        messages.error(
+            request,
+            _(
+                "Remove the existing lines first — AI never overwrites what is filled in."
+            ),
+        )
     else:
         enqueue_extraction(chalani)
         messages.info(request, _("Reading it again…"))
@@ -296,7 +309,9 @@ def photo(request, pk):
     chalani = _get_chalani(request, pk)
     if not chalani.photo:
         raise Http404(_("There is no photo"))
-    content_type = mimetypes.guess_type(chalani.photo.name)[0] or "application/octet-stream"
+    content_type = (
+        mimetypes.guess_type(chalani.photo.name)[0] or "application/octet-stream"
+    )
     response = FileResponse(chalani.photo.open("rb"), content_type=content_type)
     response["Cache-Control"] = "private, max-age=3600"
     response["Content-Disposition"] = f'inline; filename="chalani-{chalani.pk}"'
@@ -312,7 +327,9 @@ def vendor_list(request):
     )
     if query:
         vendors = vendors.filter(
-            Q(name__icontains=query) | Q(name_np__icontains=query) | Q(pan_no__icontains=query)
+            Q(name__icontains=query)
+            | Q(name_np__icontains=query)
+            | Q(pan_no__icontains=query)
         )
     context = {"vendors": vendors, "q": query}
     if request.htmx:
@@ -322,9 +339,15 @@ def vendor_list(request):
 
 @org_required
 def vendor_form(request, pk=None):
-    vendor = get_object_or_404(Vendor.objects.for_org(request.organization), pk=pk) if pk else None
+    vendor = (
+        get_object_or_404(Vendor.objects.for_org(request.organization), pk=pk)
+        if pk
+        else None
+    )
     if request.method == "POST":
-        form = VendorForm(request.POST, instance=vendor, organization=request.organization)
+        form = VendorForm(
+            request.POST, instance=vendor, organization=request.organization
+        )
         if form.is_valid():
             vendor = form.save()
             messages.success(request, _("%(vendor)s saved.") % {"vendor": vendor})
@@ -352,7 +375,11 @@ def item_list(request):
 
 @org_required
 def item_form(request, pk=None):
-    item = get_object_or_404(Item.objects.for_org(request.organization), pk=pk) if pk else None
+    item = (
+        get_object_or_404(Item.objects.for_org(request.organization), pk=pk)
+        if pk
+        else None
+    )
     if request.method == "POST":
         form = ItemForm(request.POST, instance=item, organization=request.organization)
         if form.is_valid():
@@ -375,7 +402,9 @@ def vendor_report(request):
         .annotate(
             chalani_count=Count("id", distinct=True),
             amount=Sum(F("items__qty") * F("items__rate"), output_field=AMOUNT),
-            verified=Count("id", distinct=True, filter=Q(status__in=["verified", "billed"])),
+            verified=Count(
+                "id", distinct=True, filter=Q(status__in=["verified", "billed"])
+            ),
         )
         .order_by("-amount")
     )
@@ -408,14 +437,21 @@ def vendor_report(request):
 def export_csv(request):
     import csv
 
-    chalanis, _ = _filtered_register(request)
+    chalanis, _filters = _filtered_register(request)  # `_` is gettext here
     response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
     response["Content-Disposition"] = 'attachment; filename="chalani-register.csv"'
     writer = csv.writer(response)
     writer.writerow(
         [
-            _("Date (BS)"), _("Date (AD)"), _("Fiscal year"), _("Chalani no."),
-            _("Supplier"), _("Vehicle no."), _("Lines"), _("Total amount"), _("Status"),
+            _("Date (BS)"),
+            _("Date (AD)"),
+            _("Fiscal year"),
+            _("Chalani no."),
+            _("Supplier"),
+            _("Vehicle no."),
+            _("Lines"),
+            _("Total amount"),
+            _("Status"),
         ]
     )
     for chalani in chalanis.iterator():
@@ -458,7 +494,9 @@ def dashboard(request):
             "recent": this_fy.select_related("vendor").with_totals()[:8],
             "top_vendors": (
                 this_fy.values("vendor__name", "vendor__name_np")
-                .annotate(amount=Sum(F("items__qty") * F("items__rate"), output_field=AMOUNT))
+                .annotate(
+                    amount=Sum(F("items__qty") * F("items__rate"), output_field=AMOUNT)
+                )
                 .filter(vendor__isnull=False)
                 .order_by("-amount")[:5]
             ),

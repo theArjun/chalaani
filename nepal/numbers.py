@@ -16,16 +16,106 @@ __all__ = [
 ]
 
 _ONES_NP = [
-    "शून्य", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ",
-    "दश", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस",
-    "बीस", "एक्काइस", "बाइस", "तेइस", "चौबिस", "पच्चिस", "छब्बिस", "सत्ताइस", "अट्ठाइस", "उनन्तिस",
-    "तीस", "एकतिस", "बत्तिस", "तेत्तिस", "चौँतिस", "पैँतिस", "छत्तिस", "सर्तिस", "अठतिस", "उनन्चालिस",
-    "चालिस", "एकचालिस", "बयालिस", "त्रिचालिस", "चवालिस", "पैँतालिस", "छयालिस", "सर्चालिस", "अठचालिस", "उनन्चास",
-    "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी",
-    "साठी", "एकसट्ठी", "बयसट्ठी", "त्रिसट्ठी", "चौंसट्ठी", "पैंसट्ठी", "छयसट्ठी", "सतसट्ठी", "अठसट्ठी", "उनन्सत्तरी",
-    "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी",
-    "असी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे",
-    "नब्बे", "एकानब्बे", "बयानब्बे", "त्रियानब्बे", "चौरानब्बे", "पन्चानब्बे", "छयानब्बे", "सन्तानब्बे", "अन्ठानब्बे", "उनान्सय",
+    "शून्य",
+    "एक",
+    "दुई",
+    "तीन",
+    "चार",
+    "पाँच",
+    "छ",
+    "सात",
+    "आठ",
+    "नौ",
+    "दश",
+    "एघार",
+    "बाह्र",
+    "तेह्र",
+    "चौध",
+    "पन्ध्र",
+    "सोह्र",
+    "सत्र",
+    "अठार",
+    "उन्नाइस",
+    "बीस",
+    "एक्काइस",
+    "बाइस",
+    "तेइस",
+    "चौबिस",
+    "पच्चिस",
+    "छब्बिस",
+    "सत्ताइस",
+    "अट्ठाइस",
+    "उनन्तिस",
+    "तीस",
+    "एकतिस",
+    "बत्तिस",
+    "तेत्तिस",
+    "चौँतिस",
+    "पैँतिस",
+    "छत्तिस",
+    "सर्तिस",
+    "अठतिस",
+    "उनन्चालिस",
+    "चालिस",
+    "एकचालिस",
+    "बयालिस",
+    "त्रिचालिस",
+    "चवालिस",
+    "पैँतालिस",
+    "छयालिस",
+    "सर्चालिस",
+    "अठचालिस",
+    "उनन्चास",
+    "पचास",
+    "एकाउन्न",
+    "बाउन्न",
+    "त्रिपन्न",
+    "चवन्न",
+    "पचपन्न",
+    "छपन्न",
+    "सन्ताउन्न",
+    "अन्ठाउन्न",
+    "उनन्साठी",
+    "साठी",
+    "एकसट्ठी",
+    "बयसट्ठी",
+    "त्रिसट्ठी",
+    "चौंसट्ठी",
+    "पैंसट्ठी",
+    "छयसट्ठी",
+    "सतसट्ठी",
+    "अठसट्ठी",
+    "उनन्सत्तरी",
+    "सत्तरी",
+    "एकहत्तर",
+    "बहत्तर",
+    "त्रिहत्तर",
+    "चौहत्तर",
+    "पचहत्तर",
+    "छयहत्तर",
+    "सतहत्तर",
+    "अठहत्तर",
+    "उनासी",
+    "असी",
+    "एकासी",
+    "बयासी",
+    "त्रियासी",
+    "चौरासी",
+    "पचासी",
+    "छयासी",
+    "सतासी",
+    "अठासी",
+    "उनान्नब्बे",
+    "नब्बे",
+    "एकानब्बे",
+    "बयानब्बे",
+    "त्रियानब्बे",
+    "चौरानब्बे",
+    "पन्चानब्बे",
+    "छयानब्बे",
+    "सन्तानब्बे",
+    "अन्ठानब्बे",
+    "उनान्सय",
 ]
 
 # (divisor, Nepali name, English name) — largest first.
@@ -38,12 +128,38 @@ _SCALES = [
 ]
 
 _ONES_EN = [
-    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
-    "seventeen", "eighteen", "nineteen",
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
 ]
 _TENS_EN = [
-    "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
+    "",
+    "",
+    "twenty",
+    "thirty",
+    "forty",
+    "fifty",
+    "sixty",
+    "seventy",
+    "eighty",
+    "ninety",
 ]
 
 
@@ -51,9 +167,12 @@ def _to_decimal(value) -> Decimal:
     if value is None or value == "":
         return Decimal("0")
     try:
-        return Decimal(str(ascii_digits(value)).replace(",", "").strip())
-    except (InvalidOperation, ValueError):
+        number = Decimal(str(ascii_digits(value)).replace(",", "").strip())
+    except (InvalidOperation, ValueError, TypeError):
         return Decimal("0")
+    # NaN and Infinity parse but cannot be formatted or compared — read them as
+    # nothing rather than raising out of a template filter.
+    return number if number.is_finite() else Decimal("0")
 
 
 def group_indian(value, decimals: int = 2) -> str:
@@ -75,7 +194,9 @@ def group_indian(value, decimals: int = 2) -> str:
     return f"{sign}{whole}.{frac}" if decimals else f"{sign}{whole}"
 
 
-def format_amount(value, decimals: int = 2, devanagari: bool = False, prefix: str = "") -> str:
+def format_amount(
+    value, decimals: int = 2, devanagari: bool = False, prefix: str = ""
+) -> str:
     text = group_indian(value, decimals)
     if devanagari:
         text = devanagari_digits(text)

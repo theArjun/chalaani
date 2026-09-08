@@ -14,8 +14,12 @@ class Organization(models.Model):
     name = models.CharField("Firm name", max_length=200)
     name_np = models.CharField(_("Firm name (Nepali)"), max_length=200, blank=True)
     slug = models.SlugField(max_length=60, unique=True)
-    pan_no = models.CharField("PAN/VAT", max_length=20, blank=True, validators=[validate_pan])
-    phone = models.CharField(max_length=20, blank=True, validators=[validate_nepali_phone])
+    pan_no = models.CharField(
+        "PAN/VAT", max_length=20, blank=True, validators=[validate_pan]
+    )
+    phone = models.CharField(
+        max_length=20, blank=True, validators=[validate_nepali_phone]
+    )
     address = models.CharField(_("Address"), max_length=200, blank=True)
     district = models.CharField(_("District"), max_length=60, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

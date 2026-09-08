@@ -28,7 +28,9 @@ class CurrentOrganizationMiddleware:
 
     @staticmethod
     def _resolve(user) -> Membership | None:
-        memberships = Membership.objects.select_related("organization").filter(user=user)
+        memberships = Membership.objects.select_related("organization").filter(
+            user=user
+        )
         active_id = user.active_organization_id
         if active_id:
             for membership in memberships:

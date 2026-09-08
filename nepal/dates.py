@@ -17,17 +17,45 @@ from django.utils.translation import gettext_lazy as _
 
 # Baishakh .. Chaitra
 MONTHS_NP = [
-    "बैशाख", "जेठ", "असार", "श्रावण", "भदौ", "आश्विन",
-    "कार्तिक", "मंसिर", "पुष", "माघ", "फाल्गुन", "चैत्र",
+    "बैशाख",
+    "जेठ",
+    "असार",
+    "श्रावण",
+    "भदौ",
+    "आश्विन",
+    "कार्तिक",
+    "मंसिर",
+    "पुष",
+    "माघ",
+    "फाल्गुन",
+    "चैत्र",
 ]
 MONTHS_EN = [
-    "Baishakh", "Jestha", "Ashar", "Shrawan", "Bhadau", "Ashoj",
-    "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra",
+    "Baishakh",
+    "Jestha",
+    "Ashar",
+    "Shrawan",
+    "Bhadau",
+    "Ashoj",
+    "Kartik",
+    "Mangsir",
+    "Poush",
+    "Magh",
+    "Falgun",
+    "Chaitra",
 ]
 
 # The Nepali week starts on Sunday.
 WEEKDAYS_NP = ["आइतबार", "सोमबार", "मंगलबार", "बुधबार", "बिहीबार", "शुक्रबार", "शनिबार"]
-WEEKDAYS_EN = ["Aaitabar", "Sombar", "Mangalbar", "Budhabar", "Bihibar", "Sukrabar", "Sanibar"]
+WEEKDAYS_EN = [
+    "Aaitabar",
+    "Sombar",
+    "Mangalbar",
+    "Budhabar",
+    "Bihibar",
+    "Sukrabar",
+    "Sanibar",
+]
 
 #: Nepali fiscal year opens on Shrawan 1 (month 4).
 FISCAL_YEAR_START_MONTH = 4

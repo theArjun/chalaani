@@ -40,8 +40,12 @@ def _search_key(*parts) -> str:
 class Vendor(OrgScoped):
     name = models.CharField("Supplier name", max_length=200)
     name_np = models.CharField(_("Supplier name (Nepali)"), max_length=200, blank=True)
-    pan_no = models.CharField("PAN/VAT", max_length=20, blank=True, validators=[validate_pan])
-    phone = models.CharField(_("Phone"), max_length=20, blank=True, validators=[validate_nepali_phone])
+    pan_no = models.CharField(
+        "PAN/VAT", max_length=20, blank=True, validators=[validate_pan]
+    )
+    phone = models.CharField(
+        _("Phone"), max_length=20, blank=True, validators=[validate_nepali_phone]
+    )
     address = models.CharField(_("Address"), max_length=200, blank=True)
     district = models.CharField(_("District"), max_length=60, blank=True)
     is_active = models.BooleanField(default=True)
@@ -66,7 +70,9 @@ class Vendor(OrgScoped):
 class Item(OrgScoped):
     name = models.CharField("Item name", max_length=200)
     name_np = models.CharField(_("Item name (Nepali)"), max_length=200, blank=True)
-    unit = models.CharField(_("Unit"), max_length=20, choices=UNIT_CHOICES, default="pcs")
+    unit = models.CharField(
+        _("Unit"), max_length=20, choices=UNIT_CHOICES, default="pcs"
+    )
     default_rate = models.DecimalField(
         _("Default rate"), max_digits=12, decimal_places=2, null=True, blank=True
     )
@@ -120,19 +126,25 @@ class Chalani(OrgScoped):
     chalani_no = models.CharField(_("Chalani no."), max_length=50, blank=True)
     date = models.DateField(_("Date (AD)"), null=True, blank=True)
     date_bs = models.CharField(_("Date (BS)"), max_length=12, blank=True)
-    fiscal_year = models.CharField(_("Fiscal year"), max_length=9, blank=True, db_index=True)
+    fiscal_year = models.CharField(
+        _("Fiscal year"), max_length=9, blank=True, db_index=True
+    )
     vehicle_no = models.CharField(
         _("Vehicle no."), max_length=30, blank=True, validators=[validate_vehicle_no]
     )
     received_by = models.CharField(_("Received by"), max_length=100, blank=True)
     remarks = models.CharField(_("Remarks"), max_length=300, blank=True)
     photo = models.ImageField(upload_to=chalani_upload_path, blank=True)
-    status = models.CharField(max_length=12, choices=Status.choices, default=Status.DRAFT)
+    status = models.CharField(
+        max_length=12, choices=Status.choices, default=Status.DRAFT
+    )
     extracted_by_ai = models.BooleanField(default=False)
     raw_extraction = models.JSONField(null=True, blank=True)
     extraction_error = models.TextField(blank=True)
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="chalanis_created"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="chalanis_created",
     )
     verified_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -234,12 +246,20 @@ class Chalani(OrgScoped):
 class ChalaniItem(models.Model):
     chalani = models.ForeignKey(Chalani, related_name="items", on_delete=models.CASCADE)
     item = models.ForeignKey(
-        Item, null=True, blank=True, on_delete=models.PROTECT, related_name="chalani_lines"
+        Item,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="chalani_lines",
     )
     description = models.CharField(_("As written on paper"), max_length=200)
     qty = models.DecimalField(_("Qty"), max_digits=12, decimal_places=3)
-    unit = models.CharField(_("Unit"), max_length=20, choices=UNIT_CHOICES, default="pcs")
-    rate = models.DecimalField(_("Rate"), max_digits=12, decimal_places=2, null=True, blank=True)
+    unit = models.CharField(
+        _("Unit"), max_length=20, choices=UNIT_CHOICES, default="pcs"
+    )
+    rate = models.DecimalField(
+        _("Rate"), max_digits=12, decimal_places=2, null=True, blank=True
+    )
     line_no = models.PositiveSmallIntegerField(default=0)
 
     class Meta:

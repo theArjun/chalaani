@@ -27,9 +27,12 @@ def _decimal(value, places="0.001") -> Decimal | None:
     if value is None or value == "":
         return None
     try:
-        return Decimal(str(ascii_digits(value)).replace(",", "").strip()).quantize(
-            Decimal(places)
-        )
+        number = Decimal(str(ascii_digits(value)).replace(",", "").strip())
+        # `Decimal("nan")` and `Decimal("inf")` parse fine but no column takes
+        # them — treat them as unread, the way any other rubbish is treated.
+        if not number.is_finite():
+            return None
+        return number.quantize(Decimal(places))
     except (InvalidOperation, ValueError):
         return None
 
@@ -47,7 +50,9 @@ def _best_match(candidates: dict[str, object], *keys: str):
         if len(contained) == 1:
             return contained[0]
     for key in wanted:
-        close = difflib.get_close_matches(key, list(candidates), n=1, cutoff=MATCH_CUTOFF)
+        close = difflib.get_close_matches(
+            key, list(candidates), n=1, cutoff=MATCH_CUTOFF
+        )
         if close:
             return candidates[close[0]]
     return None
@@ -107,7 +112,9 @@ def apply_extraction(chalani: Chalani, extraction) -> Chalani:
         chalani.received_by = str(data.received_by)[:100]
     if not chalani.remarks:
         remarks = " · ".join(
-            str(part) for part in (data.destination, data.driver_name, data.remarks) if part
+            str(part)
+            for part in (data.destination, data.driver_name, data.remarks)
+            if part
         )
         chalani.remarks = remarks[:300]
 

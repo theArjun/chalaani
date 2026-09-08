@@ -21,7 +21,9 @@ PNG = (
 
 def make_org(name="Firm", username="clerk", role=Membership.Role.OWNER):
     organization = Organization.objects.create(name=name)
-    user = get_user_model().objects.create_user(username=username, password="pw12345678")
+    user = get_user_model().objects.create_user(
+        username=username, password="pw12345678"
+    )
     Membership.objects.create(organization=organization, user=user, role=role)
     user.active_organization = organization
     user.save()
@@ -92,7 +94,10 @@ class ExtractionApplyTests(TestCase):
             pan_no="600238914",
         )
         self.item = Item.objects.create(
-            organization=self.org, name="Cement OPC 50kg", name_np="सिमेन्ट ओ.पि.सि. ५० के.जी.", unit="bag"
+            organization=self.org,
+            name="Cement OPC 50kg",
+            name_np="सिमेन्ट ओ.पि.सि. ५० के.जी.",
+            unit="bag",
         )
 
     def test_matches_vendor_by_pan_even_when_the_name_is_off(self):
@@ -101,7 +106,9 @@ class ExtractionApplyTests(TestCase):
         )
 
     def test_matches_vendor_by_devanagari_name(self):
-        self.assertEqual(match_vendor(self.org, name_np="हिमाल सिमेन्ट उद्योग"), self.vendor)
+        self.assertEqual(
+            match_vendor(self.org, name_np="हिमाल सिमेन्ट उद्योग"), self.vendor
+        )
 
     def test_does_not_match_an_unrelated_vendor(self):
         self.assertIsNone(match_vendor(self.org, name="Everest Steel Traders"))
@@ -116,7 +123,12 @@ class ExtractionApplyTests(TestCase):
             vehicle_no="बा १२ ख ३४५६",
             received_by="रमेश श्रेष्ठ",
             items=[
-                ExtractedItem(description="सिमेन्ट ओ.पि.सि. ५० के.जी.", qty=120, unit="बोरा", rate=870),
+                ExtractedItem(
+                    description="सिमेन्ट ओ.पि.सि. ५० के.जी.",
+                    qty=120,
+                    unit="बोरा",
+                    rate=870,
+                ),
                 ExtractedItem(description="बाँध्ने तार", qty=15.5, unit="kg"),
             ],
         )
@@ -138,9 +150,14 @@ class ExtractionApplyTests(TestCase):
 
     def test_apply_extraction_never_overwrites_clerk_input(self):
         chalani = Chalani.objects.create(
-            organization=self.org, created_by=self.user, chalani_no="TYPED", date_bs="2082-01-01"
+            organization=self.org,
+            created_by=self.user,
+            chalani_no="TYPED",
+            date_bs="2082-01-01",
         )
-        apply_extraction(chalani, ChalaniExtraction(chalani_no="AI", date_bs="2082-05-17"))
+        apply_extraction(
+            chalani, ChalaniExtraction(chalani_no="AI", date_bs="2082-05-17")
+        )
         self.assertEqual(chalani.chalani_no, "TYPED")
         self.assertEqual(chalani.date_bs, "2082-01-01")
 
@@ -157,7 +174,9 @@ class TenancyTests(TestCase):
 
     def test_other_org_cannot_open_a_chalani(self):
         self.client.force_login(self.user_b)
-        self.assertEqual(self.client.get(self.chalani.get_absolute_url()).status_code, 404)
+        self.assertEqual(
+            self.client.get(self.chalani.get_absolute_url()).status_code, 404
+        )
 
     def test_other_org_cannot_fetch_the_photo(self):
         self.client.force_login(self.user_b)
@@ -198,7 +217,9 @@ class RegisterViewTests(TestCase):
         self.assertContains(response, "१७ भदौ २०८२")
 
     def test_htmx_request_returns_only_the_fragment(self):
-        response = self.client.get(reverse("chalani:register"), headers={"hx-request": "true"})
+        response = self.client.get(
+            reverse("chalani:register"), headers={"hx-request": "true"}
+        )
         self.assertEqual(response.status_code, 200)
         body = response.content.decode()
         self.assertIn("register-results", body)
@@ -212,7 +233,9 @@ class RegisterViewTests(TestCase):
 
     def test_add_row_returns_a_row_and_bumps_total_forms(self):
         url = reverse("chalani:add_row", args=[self.chalani.pk])
-        response = self.client.get(url, {"items-TOTAL_FORMS": "1"}, headers={"hx-request": "true"})
+        response = self.client.get(
+            url, {"items-TOTAL_FORMS": "1"}, headers={"hx-request": "true"}
+        )
         body = response.content.decode()
         self.assertIn('name="items-1-description"', body)
         self.assertIn('hx-swap-oob="true"', body)
@@ -251,20 +274,32 @@ class RegisterViewTests(TestCase):
 class VerifyFlowTests(TestCase):
     def setUp(self):
         self.org, self.user = make_org()
-        self.staff = get_user_model().objects.create_user(username="staff", password="pw12345678")
+        self.staff = get_user_model().objects.create_user(
+            username="staff", password="pw12345678"
+        )
         Membership.objects.create(
             organization=self.org, user=self.staff, role=Membership.Role.STAFF
         )
         self.staff.active_organization = self.org
         self.staff.save()
         self.vendor = Vendor.objects.create(organization=self.org, name="Himal Cement")
-        self.item = Item.objects.create(organization=self.org, name="Cement", unit="bag")
+        self.item = Item.objects.create(
+            organization=self.org, name="Cement", unit="bag"
+        )
         self.chalani = Chalani.objects.create(
-            organization=self.org, created_by=self.user, vendor=self.vendor,
-            chalani_no="C/1", date_bs="2082-05-17",
+            organization=self.org,
+            created_by=self.user,
+            vendor=self.vendor,
+            chalani_no="C/1",
+            date_bs="2082-05-17",
         )
         ChalaniItem.objects.create(
-            chalani=self.chalani, item=self.item, description="सिमेन्ट", qty=10, unit="bag", rate=870
+            chalani=self.chalani,
+            item=self.item,
+            description="सिमेन्ट",
+            qty=10,
+            unit="bag",
+            rate=870,
         )
 
     def test_manager_can_verify_a_complete_chalani(self):
@@ -288,11 +323,17 @@ class VerifyFlowTests(TestCase):
 
     def test_duplicate_verified_number_is_reported_not_crashed(self):
         Chalani.objects.create(
-            organization=self.org, created_by=self.user, vendor=self.vendor,
-            chalani_no="C/1", status=Chalani.Status.VERIFIED, date_bs="2082-05-01",
+            organization=self.org,
+            created_by=self.user,
+            vendor=self.vendor,
+            chalani_no="C/1",
+            status=Chalani.Status.VERIFIED,
+            date_bs="2082-05-01",
         )
         self.client.force_login(self.user)
-        response = self.client.post(reverse("chalani:verify", args=[self.chalani.pk]), follow=True)
+        response = self.client.post(
+            reverse("chalani:verify", args=[self.chalani.pk]), follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.chalani.refresh_from_db()
         self.assertEqual(self.chalani.status, Chalani.Status.DRAFT)
@@ -309,7 +350,12 @@ class UploadTests(TestCase):
         with mock.patch("chalani.views.enqueue_extraction") as enqueue:
             response = self.client.post(
                 reverse("chalani:upload"),
-                {"photo": SimpleUploadedFile("slip.png", PNG, content_type="image/png"), "use_ai": "on"},
+                {
+                    "photo": SimpleUploadedFile(
+                        "slip.png", PNG, content_type="image/png"
+                    ),
+                    "use_ai": "on",
+                },
             )
         self.assertEqual(response.status_code, 302)
         chalani = Chalani.objects.get()
@@ -320,21 +366,30 @@ class UploadTests(TestCase):
         with mock.patch("chalani.views.enqueue_extraction") as enqueue:
             self.client.post(
                 reverse("chalani:upload"),
-                {"photo": SimpleUploadedFile("slip.png", PNG, content_type="image/png")},
+                {
+                    "photo": SimpleUploadedFile(
+                        "slip.png", PNG, content_type="image/png"
+                    )
+                },
             )
         enqueue.assert_not_called()
 
     def test_a_failed_reading_lands_on_an_editable_draft(self):
         chalani = Chalani.objects.create(
-            organization=self.org, created_by=self.user,
+            organization=self.org,
+            created_by=self.user,
             photo=SimpleUploadedFile("slip.png", PNG, content_type="image/png"),
             status=Chalani.Status.EXTRACTING,
         )
         from extraction.tasks import run_extraction
 
-        with mock.patch(
-            "extraction.chain.extract_from_image", side_effect=RuntimeError("API down")
-        ), self.assertLogs("extraction.tasks", level="ERROR"):
+        with (
+            mock.patch(
+                "extraction.chain.extract_from_image",
+                side_effect=RuntimeError("API down"),
+            ),
+            self.assertLogs("extraction.tasks", level="ERROR"),
+        ):
             run_extraction(chalani.pk)
         chalani.refresh_from_db()
         self.assertEqual(chalani.status, Chalani.Status.DRAFT)
@@ -348,8 +403,11 @@ class LanguageSwitchTests(TestCase):
         self.org, self.user = make_org()
         vendor = Vendor.objects.create(organization=self.org, name="Himal Cement")
         self.chalani = Chalani.objects.create(
-            organization=self.org, created_by=self.user, vendor=vendor,
-            chalani_no="C/1204", date_bs="2082-05-17",
+            organization=self.org,
+            created_by=self.user,
+            vendor=vendor,
+            chalani_no="C/1204",
+            date_bs="2082-05-17",
         )
         self.client.force_login(self.user)
 
@@ -383,7 +441,9 @@ class LanguageSwitchTests(TestCase):
         from nepal.dates import bs_to_ad
 
         recent = Chalani.objects.create(
-            organization=self.org, created_by=self.user, chalani_no="C/1205",
+            organization=self.org,
+            created_by=self.user,
+            chalani_no="C/1205",
         )
         recent.date = bs_to_ad("2082-05-17")
         response = self.client.get(
@@ -420,10 +480,15 @@ class McpServerTests(TestCase):
         self.vendor = Vendor.objects.create(
             organization=self.org_a, name="Himal Cement", name_np="हिमाल सिमेन्ट उद्योग"
         )
-        self.item = Item.objects.create(organization=self.org_a, name="Cement", unit="bag")
+        self.item = Item.objects.create(
+            organization=self.org_a, name="Cement", unit="bag"
+        )
         self.chalani = Chalani.objects.create(
-            organization=self.org_a, created_by=self.user_a, vendor=self.vendor,
-            chalani_no="C/1204", date_bs="2082-05-17",
+            organization=self.org_a,
+            created_by=self.user_a,
+            vendor=self.vendor,
+            chalani_no="C/1204",
+            date_bs="2082-05-17",
         )
         self.line = ChalaniItem.objects.create(
             chalani=self.chalani, description="सिमेन्ट", qty=10, unit="bag", rate=870
@@ -458,8 +523,12 @@ class McpServerTests(TestCase):
             self.mcp.convert_date()
 
     def test_filtering_by_fiscal_year_and_bs_range(self):
-        self.assertEqual(self.mcp.list_chalani(self.org_a, fiscal_year="2082/83")["count"], 1)
-        self.assertEqual(self.mcp.list_chalani(self.org_a, fiscal_year="2081/82")["count"], 0)
+        self.assertEqual(
+            self.mcp.list_chalani(self.org_a, fiscal_year="2082/83")["count"], 1
+        )
+        self.assertEqual(
+            self.mcp.list_chalani(self.org_a, fiscal_year="2081/82")["count"], 0
+        )
         self.assertEqual(
             self.mcp.list_chalani(self.org_a, date_from_bs="2082-06-01")["count"], 0
         )

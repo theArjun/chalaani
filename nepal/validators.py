@@ -34,7 +34,9 @@ def validate_nepali_phone(value):
     if _MOBILE_RE.match(digits) or _LANDLINE_RE.match(digits):
         return
     raise ValidationError(
-        _("That phone number does not look right — use a mobile (98########) or a landline (01-#######)."),
+        _(
+            "That phone number does not look right — use a mobile (98########) or a landline (01-#######)."
+        ),
         code="invalid_phone",
     )
 

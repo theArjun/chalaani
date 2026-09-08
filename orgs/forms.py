@@ -13,10 +13,14 @@ class OrganizationForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={"class": INPUT}),
             "name_np": forms.TextInput(attrs={"class": INPUT}),
-            "pan_no": forms.TextInput(attrs={"class": INPUT + " font-mono", "maxlength": 9}),
+            "pan_no": forms.TextInput(
+                attrs={"class": INPUT + " font-mono", "maxlength": 9}
+            ),
             "phone": forms.TextInput(attrs={"class": INPUT + " font-mono"}),
             "address": forms.TextInput(attrs={"class": INPUT}),
-            "district": forms.TextInput(attrs={"class": INPUT, "placeholder": _("Kathmandu")}),
+            "district": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": _("Kathmandu")}
+            ),
         }
 
 

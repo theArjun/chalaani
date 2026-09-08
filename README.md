@@ -337,12 +337,26 @@ chalaani/
 uv run python manage.py test
 ```
 
-The suite covers BS/AD conversion and fiscal-year edges, lakh/crore formatting, unit
-folding, tenancy isolation (including photo access), the partial-unique
-constraint, extraction application and its failure path, the HTMX fragments, the
-verify/role rules, localisation — including the rule that an English UI still
-renders Bikram Sambat dates — and the MCP surface (org scoping, write gating, and
-that `organization` never reaches a tool schema).
+545 tests, covering every line of the project bar two unreachable branches. To
+see that for yourself, no extra dependency needed:
+
+```bash
+uv run --with coverage python -m coverage run \
+  --source=accounts,orgs,nepal,chalani,extraction,config \
+  --omit="*/migrations/*,*/tests.py,*/test_*.py" manage.py test
+uv run --with coverage python -m coverage report -m
+```
+
+| Area | What is asserted |
+| --- | --- |
+| Bikram Sambat | parsing every separator and Devanagari digits, AD round trips, fiscal-year edges (Ashad 32, the Shrawan boundary, the 2099/00 century wrap), month bounds, and that an unreadable date never becomes a guessed one |
+| Numbers and units | lakh/crore grouping, rounding, amounts in words in both languages, and that unreadable input reads as zero rather than raising |
+| Tenancy | every screen, the photo view, the catalog, the reports, the CSV export and the MCP tools refuse another firm's rows; roles decide who verifies |
+| The register | date syncing, totals, what blocks verification, the partial-unique constraint, and each status transition |
+| Extraction | the schema contract, the gate when AI is switched off or has no key, and that every failure lands on an editable draft rather than a 500 |
+| Localisation | the whole UI in both languages, an English UI still rendering Bikram Sambat, and a catalog with nothing left untranslated |
+| The MCP surface | every tool called directly and again through a built server, org scoping, write gating, and that `organization` never reaches a tool schema |
+| The project | no public media URL, no page answering an anonymous visitor, and `DJANGO_DEBUG=0` turning the cookie hardening on by itself |
 
 ## Contributing
 

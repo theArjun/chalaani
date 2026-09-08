@@ -33,9 +33,7 @@ def switch(request, pk):
     membership = get_object_or_404(Membership, organization_id=pk, user=request.user)
     request.user.active_organization = membership.organization
     request.user.save(update_fields=["active_organization"])
-    messages.info(
-        request, _("Switched to %(org)s.") % {"org": membership.organization}
-    )
+    messages.info(request, _("Switched to %(org)s.") % {"org": membership.organization})
     return redirect("chalani:dashboard")
 
 
@@ -52,7 +50,8 @@ def settings_view(request):
             member_form = AddMemberForm(request.POST)
             if member_form.is_valid():
                 user = member_form.cleaned_data["username"]
-                _, created = Membership.objects.get_or_create(
+                # NB: never bind `_` here — it is gettext for this module.
+                membership, created = Membership.objects.get_or_create(
                     organization=request.organization,
                     user=user,
                     defaults={"role": member_form.cleaned_data["role"]},
@@ -95,9 +94,7 @@ def remove_member(request, pk):
     if request.membership.role != Membership.Role.OWNER:
         messages.error(request, _("Only the owner can remove members."))
         return redirect("orgs:settings")
-    membership = get_object_or_404(
-        Membership, pk=pk, organization=request.organization
-    )
+    membership = get_object_or_404(Membership, pk=pk, organization=request.organization)
     if membership.user_id == request.user.id:
         messages.error(request, _("You cannot remove yourself."))
     else:

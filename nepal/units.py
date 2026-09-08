@@ -9,15 +9,35 @@ from __future__ import annotations
 
 # code, Nepali label, English label, aliases
 UNITS = [
-    ("pcs", "थान", "Pieces", ["pcs", "pc", "piece", "pieces", "nos", "no", "थान", "गोटा", "नग", "वटा"]),
+    (
+        "pcs",
+        "थान",
+        "Pieces",
+        ["pcs", "pc", "piece", "pieces", "nos", "no", "थान", "गोटा", "नग", "वटा"],
+    ),
     ("bag", "बोरा", "Bag / Sack", ["bag", "bags", "sack", "bora", "बोरा", "बोरे"]),
-    ("kg", "के.जी.", "Kilogram", ["kg", "kgs", "kilo", "kilogram", "के.जी.", "केजी", "किलो"]),
+    (
+        "kg",
+        "के.जी.",
+        "Kilogram",
+        ["kg", "kgs", "kilo", "kilogram", "के.जी.", "केजी", "किलो"],
+    ),
     ("quintal", "क्विन्टल", "Quintal", ["quintal", "qtl", "क्विन्टल"]),
     ("ton", "टन", "Metric ton", ["ton", "tonne", "mt", "टन"]),
     ("ltr", "लिटर", "Litre", ["l", "ltr", "litre", "liter", "लिटर"]),
     ("m", "मिटर", "Metre", ["m", "mtr", "metre", "meter", "मिटर"]),
-    ("rft", "रनिङ फिट", "Running foot", ["rft", "ft", "feet", "foot", "फिट", "रनिङ फिट"]),
-    ("sqft", "वर्ग फिट", "Square foot", ["sqft", "sq.ft", "sq ft", "वर्ग फिट", "स्क्वायर फिट"]),
+    (
+        "rft",
+        "रनिङ फिट",
+        "Running foot",
+        ["rft", "ft", "feet", "foot", "फिट", "रनिङ फिट"],
+    ),
+    (
+        "sqft",
+        "वर्ग फिट",
+        "Square foot",
+        ["sqft", "sq.ft", "sq ft", "वर्ग फिट", "स्क्वायर फिट"],
+    ),
     ("cft", "घन फिट", "Cubic foot", ["cft", "cu.ft", "cuft", "घन फिट"]),
     ("cum", "घन मिटर", "Cubic metre", ["cum", "m3", "cu.m", "घन मिटर"]),
     ("trip", "ट्रिप", "Trip / Load", ["trip", "load", "gadi", "ट्रिप", "गाडी"]),

@@ -33,7 +33,9 @@ class Command(BaseCommand):
         parser.add_argument("--host", default="127.0.0.1")
         parser.add_argument("--port", type=int, default=8931)
         parser.add_argument(
-            "--list-orgs", action="store_true", help="Print servable organizations and exit."
+            "--list-orgs",
+            action="store_true",
+            help="Print servable organizations and exit.",
         )
         parser.add_argument(
             "--list-tools", action="store_true", help="Print the tool surface and exit."
@@ -79,13 +81,17 @@ class Command(BaseCommand):
             try:
                 return Organization.objects.get(slug=slug)
             except Organization.DoesNotExist as exc:
-                available = ", ".join(Organization.objects.values_list("slug", flat=True))
+                available = ", ".join(
+                    Organization.objects.values_list("slug", flat=True)
+                )
                 raise CommandError(
                     f"no organization with slug '{slug}'. Available: {available or 'none'}"
                 ) from exc
         organizations = list(Organization.objects.all()[:2])
         if not organizations:
-            raise CommandError("no organizations exist yet — run `manage.py seed_demo` first")
+            raise CommandError(
+                "no organizations exist yet — run `manage.py seed_demo` first"
+            )
         if len(organizations) > 1:
             raise CommandError(
                 "several organizations exist — pick one with --org <slug> "

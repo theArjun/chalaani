@@ -25,7 +25,9 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, _("Welcome! Now upload a photo of your first chalani."))
+            messages.success(
+                request, _("Welcome! Now upload a photo of your first chalani.")
+            )
             return redirect("chalani:dashboard")
     else:
         form = SignupForm()

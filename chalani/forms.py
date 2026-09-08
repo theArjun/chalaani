@@ -36,7 +36,11 @@ class ChalaniUploadForm(forms.Form):
         label=_("Photo of the chalani"),
         help_text=_("Photograph the slip — AI reads it into a draft."),
         widget=forms.ClearableFileInput(
-            attrs={"class": "file-input file-input-bordered w-full", "accept": "image/*", "capture": "environment"}
+            attrs={
+                "class": "file-input file-input-bordered w-full",
+                "accept": "image/*",
+                "capture": "environment",
+            }
         ),
     )
     use_ai = forms.BooleanField(
@@ -52,20 +56,31 @@ class ChalaniForm(OrgFormMixin, forms.ModelForm):
 
     class Meta:
         model = Chalani
-        fields = ["vendor", "chalani_no", "date_bs", "vehicle_no", "received_by", "remarks"]
+        fields = [
+            "vendor",
+            "chalani_no",
+            "date_bs",
+            "vehicle_no",
+            "received_by",
+            "remarks",
+        ]
         widgets = {
             "vendor": forms.Select(attrs={"class": SELECT}),
-            "chalani_no": forms.TextInput(attrs={"class": INPUT, "placeholder": "जस्तै C/०७८-१२०४"}),
-            "vehicle_no": forms.TextInput(attrs={"class": INPUT, "placeholder": "बा १२ ख ३४५६"}),
+            "chalani_no": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": "जस्तै C/०७८-१२०४"}
+            ),
+            "vehicle_no": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": "बा १२ ख ३४५६"}
+            ),
             "received_by": forms.TextInput(attrs={"class": INPUT}),
             "remarks": forms.TextInput(attrs={"class": INPUT}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["vendor"].queryset = Vendor.objects.for_org(self.organization).filter(
-            is_active=True
-        )
+        self.fields["vendor"].queryset = Vendor.objects.for_org(
+            self.organization
+        ).filter(is_active=True)
         self.fields["vendor"].empty_label = _("— choose a supplier —")
 
 
@@ -73,27 +88,39 @@ class ChalaniItemForm(forms.ModelForm):
     qty = NepaliDecimalField(
         max_digits=12,
         decimal_places=3,
-        widget=forms.TextInput(attrs={"class": INPUT + " text-right font-mono", "inputmode": "decimal"}),
+        widget=forms.TextInput(
+            attrs={"class": INPUT + " text-right font-mono", "inputmode": "decimal"}
+        ),
     )
     rate = NepaliDecimalField(
         max_digits=12,
         decimal_places=2,
         required=False,
-        widget=forms.TextInput(attrs={"class": INPUT + " text-right font-mono", "inputmode": "decimal"}),
+        widget=forms.TextInput(
+            attrs={"class": INPUT + " text-right font-mono", "inputmode": "decimal"}
+        ),
     )
 
     class Meta:
         model = ChalaniItem
         fields = ["item", "description", "qty", "unit", "rate"]
         widgets = {
-            "item": forms.Select(attrs={"class": "select select-bordered select-sm w-full"}),
-            "description": forms.TextInput(attrs={"class": INPUT, "placeholder": _("exactly as the paper says")}),
-            "unit": forms.Select(attrs={"class": "select select-bordered w-full"}, choices=UNIT_CHOICES),
+            "item": forms.Select(
+                attrs={"class": "select select-bordered select-sm w-full"}
+            ),
+            "description": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": _("exactly as the paper says")}
+            ),
+            "unit": forms.Select(
+                attrs={"class": "select select-bordered w-full"}, choices=UNIT_CHOICES
+            ),
         }
 
     def __init__(self, *args, organization=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["item"].queryset = Item.objects.for_org(organization).filter(is_active=True)
+        self.fields["item"].queryset = Item.objects.for_org(organization).filter(
+            is_active=True
+        )
         self.fields["item"].empty_label = _("— link to the catalog —")
         self.fields["item"].required = False
 
@@ -123,14 +150,36 @@ ChalaniItemFormSet = inlineformset_factory(
 class VendorForm(OrgFormMixin, forms.ModelForm):
     class Meta:
         model = Vendor
-        fields = ["name", "name_np", "pan_no", "phone", "address", "district", "is_active"]
+        fields = [
+            "name",
+            "name_np",
+            "pan_no",
+            "phone",
+            "address",
+            "district",
+            "is_active",
+        ]
         widgets = {
-            "name": forms.TextInput(attrs={"class": INPUT, "placeholder": "Shree Ram Hardware"}),
-            "name_np": forms.TextInput(attrs={"class": INPUT, "placeholder": "श्री राम हार्डवेयर"}),
-            "pan_no": forms.TextInput(attrs={"class": INPUT + " font-mono", "inputmode": "numeric", "maxlength": 9}),
-            "phone": forms.TextInput(attrs={"class": INPUT + " font-mono", "inputmode": "tel"}),
+            "name": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": "Shree Ram Hardware"}
+            ),
+            "name_np": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": "श्री राम हार्डवेयर"}
+            ),
+            "pan_no": forms.TextInput(
+                attrs={
+                    "class": INPUT + " font-mono",
+                    "inputmode": "numeric",
+                    "maxlength": 9,
+                }
+            ),
+            "phone": forms.TextInput(
+                attrs={"class": INPUT + " font-mono", "inputmode": "tel"}
+            ),
             "address": forms.TextInput(attrs={"class": INPUT}),
-            "district": forms.TextInput(attrs={"class": INPUT, "placeholder": _("Kathmandu")}),
+            "district": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": _("Kathmandu")}
+            ),
             "is_active": forms.CheckboxInput(attrs={"class": "toggle toggle-success"}),
         }
 
@@ -140,9 +189,15 @@ class ItemForm(OrgFormMixin, forms.ModelForm):
         model = Item
         fields = ["name", "name_np", "unit", "default_rate", "is_active"]
         widgets = {
-            "name": forms.TextInput(attrs={"class": INPUT, "placeholder": "Cement OPC 50kg"}),
-            "name_np": forms.TextInput(attrs={"class": INPUT, "placeholder": "सिमेन्ट ओ.पि.सि. ५० के.जी."}),
+            "name": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": "Cement OPC 50kg"}
+            ),
+            "name_np": forms.TextInput(
+                attrs={"class": INPUT, "placeholder": "सिमेन्ट ओ.पि.सि. ५० के.जी."}
+            ),
             "unit": forms.Select(attrs={"class": SELECT}),
-            "default_rate": forms.TextInput(attrs={"class": INPUT + " text-right font-mono", "inputmode": "decimal"}),
+            "default_rate": forms.TextInput(
+                attrs={"class": INPUT + " text-right font-mono", "inputmode": "decimal"}
+            ),
             "is_active": forms.CheckboxInput(attrs={"class": "toggle toggle-success"}),
         }

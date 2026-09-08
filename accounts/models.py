@@ -7,7 +7,9 @@ from django.utils.translation import gettext_lazy as _
 
 class User(AbstractUser):
     full_name_np = models.CharField(_("Full name"), max_length=150, blank=True)
-    phone = models.CharField(max_length=20, blank=True, validators=[validate_nepali_phone])
+    phone = models.CharField(
+        max_length=20, blank=True, validators=[validate_nepali_phone]
+    )
     active_organization = models.ForeignKey(
         "orgs.Organization",
         null=True,

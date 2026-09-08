@@ -14,11 +14,46 @@ from chalani.models import Chalani, ChalaniItem, Item, Vendor
 from orgs.models import Membership, Organization
 
 VENDORS = [
-    ("Shree Ganesh Hardware Suppliers", "श्री गणेश हार्डवेयर सप्लायर्स", "301472856", "9851024478", "बल्खु, काठमाडौँ", "काठमाडौँ"),
-    ("Himal Cement Udyog", "हिमाल सिमेन्ट उद्योग", "600238914", "9841127763", "हेटौँडा-११", "मकवानपुर"),
-    ("Everest Steel Traders", "एभरेष्ट स्टिल ट्रेडर्स", "302915647", "9802345612", "बालाजु, काठमाडौँ", "काठमाडौँ"),
-    ("Gorkha Bricks Udyog", "गोर्खा इँटा उद्योग", "500176239", "9856021144", "भक्तपुर-७", "भक्तपुर"),
-    ("Nepal Paints & Chemicals", "नेपाल पेन्ट्स एण्ड केमिकल्स", "304558712", "01-4478123", "टेकु, काठमाडौँ", "काठमाडौँ"),
+    (
+        "Shree Ganesh Hardware Suppliers",
+        "श्री गणेश हार्डवेयर सप्लायर्स",
+        "301472856",
+        "9851024478",
+        "बल्खु, काठमाडौँ",
+        "काठमाडौँ",
+    ),
+    (
+        "Himal Cement Udyog",
+        "हिमाल सिमेन्ट उद्योग",
+        "600238914",
+        "9841127763",
+        "हेटौँडा-११",
+        "मकवानपुर",
+    ),
+    (
+        "Everest Steel Traders",
+        "एभरेष्ट स्टिल ट्रेडर्स",
+        "302915647",
+        "9802345612",
+        "बालाजु, काठमाडौँ",
+        "काठमाडौँ",
+    ),
+    (
+        "Gorkha Bricks Udyog",
+        "गोर्खा इँटा उद्योग",
+        "500176239",
+        "9856021144",
+        "भक्तपुर-७",
+        "भक्तपुर",
+    ),
+    (
+        "Nepal Paints & Chemicals",
+        "नेपाल पेन्ट्स एण्ड केमिकल्स",
+        "304558712",
+        "01-4478123",
+        "टेकु, काठमाडौँ",
+        "काठमाडौँ",
+    ),
 ]
 
 ITEMS = [
@@ -36,11 +71,17 @@ ITEMS = [
 
 
 class Command(BaseCommand):
-    help = "Create a demo organization with sample chalani (username: demo / demo12345)."
+    help = (
+        "Create a demo organization with sample chalani (username: demo / demo12345)."
+    )
 
     def add_arguments(self, parser):
-        parser.add_argument("--chalani", type=int, default=24, help="how many chalani to create")
-        parser.add_argument("--reset", action="store_true", help="wipe the demo firm first")
+        parser.add_argument(
+            "--chalani", type=int, default=24, help="how many chalani to create"
+        )
+        parser.add_argument(
+            "--reset", action="store_true", help="wipe the demo firm first"
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -48,7 +89,14 @@ class Command(BaseCommand):
         User = get_user_model()
 
         if options["reset"]:
-            Organization.objects.filter(slug="demo-nirman-sewa").delete()
+            # Chalani -> Vendor/Item are PROTECT, so the firm cannot go first.
+            demo = Organization.objects.filter(slug="demo-nirman-sewa").first()
+            if demo is not None:
+                ChalaniItem.objects.filter(chalani__organization=demo).delete()
+                Chalani.objects.filter(organization=demo).delete()
+                Item.objects.filter(organization=demo).delete()
+                Vendor.objects.filter(organization=demo).delete()
+                demo.delete()
 
         organization, _ = Organization.objects.get_or_create(
             slug="demo-nirman-sewa",
@@ -70,7 +118,9 @@ class Command(BaseCommand):
         user.active_organization = organization
         user.save()
         Membership.objects.get_or_create(
-            organization=organization, user=user, defaults={"role": Membership.Role.OWNER}
+            organization=organization,
+            user=user,
+            defaults={"role": Membership.Role.OWNER},
         )
 
         vendors = [
@@ -91,7 +141,11 @@ class Command(BaseCommand):
             Item.objects.get_or_create(
                 organization=organization,
                 name=name,
-                defaults={"name_np": name_np, "unit": unit, "default_rate": Decimal(rate)},
+                defaults={
+                    "name_np": name_np,
+                    "unit": unit,
+                    "default_rate": Decimal(rate),
+                },
             )[0]
             for name, name_np, unit, rate in ITEMS
         ]
@@ -109,14 +163,29 @@ class Command(BaseCommand):
                 [Chalani.Status.DRAFT, Chalani.Status.VERIFIED, Chalani.Status.BILLED],
                 weights=[3, 5, 2],
             )[0]
+            # Drawn before the get_or_create so a second run consumes exactly the
+            # same random stream and seeds the same register.
+            lines = [
+                (item, random.random() < 0.85, random.randint(5, 400))
+                for item in random.sample(items, random.randint(1, 4))
+            ]
             chalani, made = Chalani.objects.get_or_create(
                 organization=organization,
                 vendor=vendor,
                 chalani_no=f"C/{fy_start_year % 100}-{1200 + n}",
                 defaults={
                     "date_bs": f"{year}-{month:02d}-{day:02d}",
-                    "vehicle_no": random.choice(["बा १२ ख ३४५६", "ना ५ च ८८२१", "प्रदेश ३-०१-००४ च ०४३४", "बा २ ज ११९०"]),
-                    "received_by": random.choice(["रमेश श्रेष्ठ", "सुनिता तामाङ", "हरि बहादुर", "बिनोद गुरुङ"]),
+                    "vehicle_no": random.choice(
+                        [
+                            "बा १२ ख ३४५६",
+                            "ना ५ च ८८२१",
+                            "प्रदेश ३-०१-००४ च ०४३४",
+                            "बा २ ज ११९०",
+                        ]
+                    ),
+                    "received_by": random.choice(
+                        ["रमेश श्रेष्ठ", "सुनिता तामाङ", "हरि बहादुर", "बिनोद गुरुङ"]
+                    ),
                     "status": status,
                     "created_by": user,
                     "extracted_by_ai": random.random() < 0.6,
@@ -125,12 +194,12 @@ class Command(BaseCommand):
             if not made:
                 continue
             created_count += 1
-            for line_no, item in enumerate(random.sample(items, random.randint(1, 4)), start=1):
+            for line_no, (item, linked, qty) in enumerate(lines, start=1):
                 ChalaniItem.objects.create(
                     chalani=chalani,
-                    item=item if random.random() < 0.85 else None,
+                    item=item if linked else None,
                     description=item.name_np,
-                    qty=Decimal(random.randint(5, 400)),
+                    qty=Decimal(qty),
                     unit=item.unit,
                     rate=item.default_rate,
                     line_no=line_no,

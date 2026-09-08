@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 from orgs.models import Membership, Organization
+
+from .models import User
 from django.utils.translation import gettext_lazy as _
 
 INPUT = "input input-bordered w-full"
@@ -18,15 +20,22 @@ class SignupForm(UserCreationForm):
     """One form creates the user, their firm, and the owner membership."""
 
     full_name_np = forms.CharField(
-        label=_("Your name"), max_length=150, widget=forms.TextInput(attrs={"class": INPUT})
+        label=_("Your name"),
+        max_length=150,
+        widget=forms.TextInput(attrs={"class": INPUT}),
     )
     phone = forms.CharField(
-        label=_("Phone"), max_length=20, required=False, widget=forms.TextInput(attrs={"class": INPUT})
+        label=_("Phone"),
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={"class": INPUT}),
     )
     organization_name = forms.CharField(
         label=_("Firm name (English)"),
         max_length=200,
-        widget=forms.TextInput(attrs={"class": INPUT, "placeholder": "Shree Ram Traders"}),
+        widget=forms.TextInput(
+            attrs={"class": INPUT, "placeholder": "Shree Ram Traders"}
+        ),
     )
     organization_name_np = forms.CharField(
         label=_("Firm name (Nepali)"),
@@ -36,6 +45,8 @@ class SignupForm(UserCreationForm):
     )
 
     class Meta(UserCreationForm.Meta):
+        # UserCreationForm.Meta points at auth.User; this project swaps it.
+        model = User
         fields = ["username", "email"]
 
     def __init__(self, *args, **kwargs):

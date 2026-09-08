@@ -136,7 +136,9 @@ def get_chalani(organization, chalani_id: int) -> dict:
                 chalani.verified_at.isoformat() if chalani.verified_at else None
             ),
             "extraction_error": chalani.extraction_error,
-            "blocks_verification": [str(gap) for gap in chalani.missing_for_verification()],
+            "blocks_verification": [
+                str(gap) for gap in chalani.missing_for_verification()
+            ],
             "items": [
                 {
                     "line_id": line.pk,
@@ -160,7 +162,9 @@ def get_chalani(organization, chalani_id: int) -> dict:
 @_managed
 def search_vendors(organization, query: str | None = None, limit: int = 20) -> dict:
     """Find suppliers by name (either script) or PAN."""
-    vendors = Vendor.objects.for_org(organization).annotate(chalani_count=Count("chalanis"))
+    vendors = Vendor.objects.for_org(organization).annotate(
+        chalani_count=Count("chalanis")
+    )
     if query:
         vendors = vendors.filter(
             Q(name__icontains=query)
@@ -290,7 +294,8 @@ def pending_verification(organization, limit: int = 20) -> dict:
     return {
         "count": len(rows),
         "chalani": [
-            _chalani_row(c) | {"blocks_verification": [str(g) for g in c.missing_for_verification()]}
+            _chalani_row(c)
+            | {"blocks_verification": [str(g) for g in c.missing_for_verification()]}
             for c in rows
         ],
     }
@@ -302,8 +307,12 @@ def convert_date(bs: str | None = None, ad: str | None = None) -> dict:
 
     if bool(bs) == bool(ad):
         raise ValueError("pass exactly one of bs= or ad=")
-    bs_date = npdates.parse_bs(bs) if bs else npdates.ad_to_bs(
-        datetime.date.fromisoformat(npdates.ascii_digits(ad)[:10])
+    bs_date = (
+        npdates.parse_bs(bs)
+        if bs
+        else npdates.ad_to_bs(
+            datetime.date.fromisoformat(npdates.ascii_digits(ad)[:10])
+        )
     )
     ad_date = bs_date.to_datetime_date()
     return {
@@ -373,7 +382,9 @@ def link_line_item(organization, line_id: int, item_id: int) -> dict:
 
 
 @_managed
-def verify_chalani(organization, chalani_id: int, verified_by: str | None = None) -> dict:
+def verify_chalani(
+    organization, chalani_id: int, verified_by: str | None = None
+) -> dict:
     """Mark a chalani verified. Refuses while anything is still missing."""
     from django.contrib.auth import get_user_model
 
@@ -410,7 +421,8 @@ def build_server(organization, allow_writes: bool = False):
     server = MCPServer(
         name=SERVER_NAME,
         title="chalaani — chalani register",
-        instructions=INSTRUCTIONS + f"\nOrganization: {organization} (id {organization.pk}).",
+        instructions=INSTRUCTIONS
+        + f"\nOrganization: {organization} (id {organization.pk}).",
         version="0.1.0",
     )
 
@@ -433,7 +445,9 @@ def build_server(organization, allow_writes: bool = False):
     for fn in READ_TOOLS:
         register(fn, read_only=True)
     server.add_tool(
-        convert_date, name="convert_date", description=(convert_date.__doc__ or "").strip()
+        convert_date,
+        name="convert_date",
+        description=(convert_date.__doc__ or "").strip(),
     )
     if allow_writes:
         for fn in WRITE_TOOLS:
