@@ -164,8 +164,8 @@
         <ul class="menu p-3 gap-1 w-full">
           <li><a href="{% url 'chalani:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>{% translate 'Dashboard' %}</a></li>
           <li><a href="{% url 'chalani:register' %}" {% if request.resolver_match.url_name == 'register' %}class="active"{% endif %}>{% translate 'Chalani register' %}</a></li>
-          <li><a href="{% url 'chalani:vendor_list' %}" {% if 'vendor' in request.resolver_match.url_name %}class="active"{% endif %}>{% translate 'Suppliers' %}</a></li>
-          <li><a href="{% url 'chalani:item_list' %}" {% if 'item' in request.resolver_match.url_name %}class="active"{% endif %}>{% translate 'Item catalog' %}</a></li>
+          <li><a href="{% url 'chalani:vendor_list' %}" {% if request.resolver_match.url_name in 'vendor_list,vendor_create,vendor_edit' %}class="active"{% endif %}>{% translate 'Suppliers' %}</a></li>
+          <li><a href="{% url 'chalani:item_list' %}" {% if request.resolver_match.url_name in 'item_list,item_create,item_edit' %}class="active"{% endif %}>{% translate 'Item catalog' %}</a></li>
           <li><a href="{% url 'chalani:vendor_report' %}" {% if request.resolver_match.url_name == 'vendor_report' %}class="active"{% endif %}>{% translate 'Report' %}</a></li>
           <li class="mt-2 border-t border-base-300 pt-2"><a href="{% url 'orgs:settings' %}">{% translate 'Firm settings' %}</a></li>
         </ul>
