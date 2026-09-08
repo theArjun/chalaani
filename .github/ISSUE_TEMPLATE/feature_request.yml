@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest something the register should do
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that is hard or impossible today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you have in mind
+      description: A rough sketch is fine. Screens, fields, or an example slip all help.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Including doing nothing, or handling it outside the app.
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Does this touch any of the house rules?
+      description: See CONTRIBUTING.md. Ticking one is not a problem — it just means we should talk about the shape first.
+      options:
+        - label: It changes how Bikram Sambat dates are stored or displayed
+        - label: It changes vendor or item matching
+        - label: It changes what crosses the tenancy boundary
+        - label: It would add a Node build step

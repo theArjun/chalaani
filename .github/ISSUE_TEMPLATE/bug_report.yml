@@ -1,0 +1,73 @@
+name: Bug report
+description: Something in the register behaves incorrectly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. For anything security-related, please do **not** file
+        an issue — use [private reporting](https://github.com/theArjun/chalaani/security/advisories/new) instead.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you get instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Seed the demo firm with `manage.py seed_demo`
+        2. Upload a photo to …
+        3. …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part
+      options:
+        - Register / chalani screens
+        - AI extraction
+        - Vendor or item catalog
+        - Reports
+        - Bikram Sambat dates or Nepali numbers
+        - Translation / language switching
+        - MCP server
+        - Organizations, roles, or login
+        - Theme, layout, or printing
+        - Something else
+    validations:
+      required: true
+
+  - type: input
+    id: language
+    attributes:
+      label: UI language
+      description: Was the UI in नेपाली or English when this happened?
+      placeholder: नेपाली
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, commit or version, OS, and whether a `qcluster` worker was running.
+      placeholder: |
+        Python: 3.12.7
+        Commit: ff2b267
+        OS: macOS 15
+        qcluster running: yes
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or traceback
+      description: Paste any traceback here. It will be formatted as code automatically.
+      render: text
